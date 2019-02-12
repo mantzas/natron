@@ -6,17 +6,6 @@ using Xunit;
 
 namespace Natron.Tests.Unit.Http.Middleware
 {
-    internal class TestRequestDelegate
-    {
-        public bool Called { get; private set; }
-        
-        public Task Next(HttpContext context)
-        {
-            Called = true;
-            return Task.CompletedTask;
-        }
-    }
-    
     public class TraceMiddlewareTests
     {
         [Fact]
@@ -26,6 +15,17 @@ namespace Natron.Tests.Unit.Http.Middleware
             var traceMiddleware = new TraceMiddleware(testRequest.Next);
             await traceMiddleware.InvokeAsync(new DefaultHttpContext());
             testRequest.Called.Should().BeTrue();
+        }
+
+        private class TestRequestDelegate
+        {
+            public bool Called { get; private set; }
+        
+            public Task Next(HttpContext context)
+            {
+                Called = true;
+                return Task.CompletedTask;
+            }
         }
     }
 }

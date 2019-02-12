@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natron.Example", "Natron.Example\Natron.Example.csproj", "{0A3C17A3-B5E1-4B05-A3AA-044BFBB1721E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natron.Example", "src\Natron.Example\Natron.Example.csproj", "{0A3C17A3-B5E1-4B05-A3AA-044BFBB1721E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natron", "Natron\Natron.csproj", "{0116C86C-07AF-40E6-AF1D-92668E799629}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natron", "src\Natron\Natron.csproj", "{0116C86C-07AF-40E6-AF1D-92668E799629}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natron.Tests.Unit", "Natron.Tests.Unit\Natron.Tests.Unit.csproj", "{BEE9C5FE-7997-4D20-9C3E-2122E43671EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natron.Tests.Unit", "tests\Natron.Tests.Unit\Natron.Tests.Unit.csproj", "{BEE9C5FE-7997-4D20-9C3E-2122E43671EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

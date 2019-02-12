@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Natron\Natron.csproj" />
+      <ProjectReference Include="..\..\src\Natron\Natron.csproj" />
     </ItemGroup>
 
 </Project>

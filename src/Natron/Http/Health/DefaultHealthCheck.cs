@@ -6,7 +6,7 @@ namespace Natron.Http.Health
 {
     public sealed class DefaultHealthCheck : IHealthCheck
     {
-        public  Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, 
+        public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
             CancellationToken cancellationToken = new CancellationToken())
         {
             return Task.FromResult(HealthCheckResult.Healthy());

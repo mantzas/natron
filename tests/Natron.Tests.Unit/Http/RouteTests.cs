@@ -1,7 +1,7 @@
 using System;
+using FluentAssertions;
 using Natron.Http;
 using Xunit;
-using FluentAssertions;
 
 namespace Natron.Tests.Unit.Http
 {
@@ -20,14 +20,14 @@ namespace Natron.Tests.Unit.Http
             Func<Route> fun = () => new Route("GET", null, null, false);
             fun.Should().Throw<ArgumentException>();
         }
-        
+
         [Fact]
         public void Route_Constructor_Throws_OnNullHandler()
         {
             Func<Route> fun = () => new Route("GET", "TEMPLATE", null, false);
             fun.Should().Throw<ArgumentException>();
         }
-        
+
         [Fact]
         public void Route_Constructor_Succeeds()
         {

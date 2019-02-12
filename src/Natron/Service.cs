@@ -19,7 +19,7 @@ namespace Natron
         public Service(ILoggerFactory loggerFactory,
             IEnumerable<Route> routes = null,
             IEnumerable<HealthCheck> healthChecks = null,
-            IEnumerable<IComponent> components = null) 
+            IEnumerable<IComponent> components = null)
         {
             _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
             _logger = loggerFactory.CreateLogger<Service>();

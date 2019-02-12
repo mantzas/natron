@@ -7,7 +7,7 @@ namespace Natron.Http
     {
         public string Name { get; }
         public IHealthCheck Instance { get; }
-        
+
         public HealthCheck(string name, IHealthCheck instance)
         {
             Name = name.ThrowIfNullOrWhitespace(nameof(name));

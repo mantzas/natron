@@ -20,7 +20,7 @@ namespace Natron.Tests.Unit.Http.Middleware
         private class TestRequestDelegate
         {
             public bool Called { get; private set; }
-        
+
             public Task Next(HttpContext context)
             {
                 Called = true;

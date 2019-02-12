@@ -4,9 +4,9 @@ using Serilog;
 
 namespace Natron.Example
 {
-    class Program
+    internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
@@ -14,7 +14,7 @@ namespace Natron.Example
 
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddSerilog();
-            loggerFactory.CreateLogger<Program>().LogInformation(("Creating service"));
+            loggerFactory.CreateLogger<Program>().LogInformation("Creating service");
             await ServiceBuilder.Create(loggerFactory).Build().Run();
         }
     }

@@ -15,7 +15,7 @@ namespace Natron
         private ServiceBuilder()
         {
         }
-        
+
         public static ServiceBuilder Create(ILoggerFactory loggerFactory)
         {
             return new ServiceBuilder
@@ -35,13 +35,13 @@ namespace Natron
             _healthChecks = healthChecks.ThrowIfNull(nameof(healthChecks));
             return this;
         }
-        
+
         public ServiceBuilder ConfigureComponents(IEnumerable<IComponent> components)
         {
             _components = components.ThrowIfNull(nameof(components));
             return this;
         }
-        
+
         public Service Build()
         {
             return new Service(_loggerFactory, _routes, _healthChecks, _components);

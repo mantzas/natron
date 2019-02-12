@@ -21,7 +21,8 @@ namespace Natron.Http
         private readonly IEnumerable<HealthCheck> _healthChecks;
         private readonly IEnumerable<Route> _routes;
 
-        public Component(ILoggerFactory loggerFactory, IEnumerable<Route> routes = null, IEnumerable<HealthCheck> healthChecks = null)
+        public Component(ILoggerFactory loggerFactory, IEnumerable<Route> routes = null,
+            IEnumerable<HealthCheck> healthChecks = null)
         {
             _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
             _logger = loggerFactory.CreateLogger<Component>();
@@ -87,6 +88,7 @@ namespace Natron.Http
                     routerBuilder.MapVerb(route.Verb, route.Template, route.Handler);
                 }
             }
+
             return routerBuilder.Build();
         }
     }

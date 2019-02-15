@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Natron.Http;
 using Serilog;
 
 namespace Natron.Example
@@ -15,7 +18,11 @@ namespace Natron.Example
             var loggerFactory = new LoggerFactory();
             loggerFactory.AddSerilog();
             loggerFactory.CreateLogger<Program>().LogInformation("Creating service");
-            await ServiceBuilder.Create(loggerFactory).Build().Run();
+            var routes = new List<Route>
+            {
+                new Route("GET","/test", context => context.Response.WriteAsync("test"),true),
+            };
+            await ServiceBuilder.Create(loggerFactory).ConfigureRoutes(routes).Build().Run();
         }
     }
 }

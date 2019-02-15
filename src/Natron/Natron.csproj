@@ -4,6 +4,7 @@
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="3.0.3" />
     <PackageReference Include="ValidDotNet" Version="0.2.23" />
   </ItemGroup>
 

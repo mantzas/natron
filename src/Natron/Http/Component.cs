@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Natron.Http.Health;
 using Natron.Http.Middleware;
+using Prometheus;
 using ValidDotNet;
 
 namespace Natron.Http
@@ -46,6 +48,7 @@ namespace Natron.Http
                 .Configure(app =>
                 {
                     app.UseRouter(BuildRouter(app));
+                    app.UseMetricServer();
                     app.UseHealthChecks("/health");
                     app.Build();
                 })
@@ -77,7 +80,7 @@ namespace Natron.Http
                     _logger.LogInformation("Adding traced route {0} {1}", route.Verb, route.Template);
                     routerBuilder.MapMiddlewareVerb(route.Verb, route.Template, action =>
                         {
-                            action.UseMiddleware<TraceMiddleware>();
+                            action.UseMiddleware<ObservabilityMiddleware>();
                             action.Run(route.Handler);
                         }
                     );

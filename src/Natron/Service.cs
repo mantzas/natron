@@ -57,7 +57,7 @@ namespace Natron
         {
             Console.CancelKeyPress += (s, ev) =>
             {
-                _logger.LogInformation("Ctrl+C pressed");
+                _logger.LogInformation("Ctrl+C pressed.");
                 _cancelTokenSource.Cancel();
                 _cancelKeyPressed = true;
                 ev.Cancel = true;
@@ -76,7 +76,7 @@ namespace Natron
                 return;
             }
 
-            _logger.LogInformation("Component returned unexpected. canceling all components.");
+            _logger.LogWarning("Component returned unexpected. Canceling all components.");
             _cancelTokenSource.Cancel();
         }
 

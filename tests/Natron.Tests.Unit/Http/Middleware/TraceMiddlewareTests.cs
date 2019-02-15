@@ -12,7 +12,7 @@ namespace Natron.Tests.Unit.Http.Middleware
         public async Task TraceMiddleware_InvokeAsync()
         {
             var testRequest = new TestRequestDelegate();
-            var traceMiddleware = new TraceMiddleware(testRequest.Next);
+            var traceMiddleware = new ObservabilityMiddleware(testRequest.Next);
             await traceMiddleware.InvokeAsync(new DefaultHttpContext());
             testRequest.Called.Should().BeTrue();
         }

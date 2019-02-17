@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using ValidDotNet;
 
-namespace Natron.Http
+namespace Natron.Http.Health
 {
     public class HealthCheck
     {

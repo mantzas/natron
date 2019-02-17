@@ -1,10 +1,9 @@
 using System;
 using FluentAssertions;
-using Natron.Http;
 using Natron.Http.Health;
 using Xunit;
 
-namespace Natron.Tests.Unit.Http
+namespace Natron.Tests.Unit.Http.Health
 {
     public class HealthCheckTests
     {

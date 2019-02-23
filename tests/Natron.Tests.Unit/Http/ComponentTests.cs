@@ -18,7 +18,7 @@ namespace Natron.Tests.Unit.Http
             var cts = new CancellationTokenSource();
             var cmp = new Component(loggerFactory);
             var t = cmp.RunAsync(cts.Token);
-            await Task.Delay(1000, cts.Token);
+            await Task.Delay(10, cts.Token);
             cts.Cancel();
             await Task.WhenAll(t);
             t.Status.Should().Be(TaskStatus.RanToCompletion);

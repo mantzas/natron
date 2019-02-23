@@ -15,11 +15,10 @@ using ValidDotNet;
 
 namespace Natron.Http
 {
-    internal class Component : IComponent
+    public class Component : IComponent
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger _logger;
-        private IWebHost _webHost;
         private readonly IEnumerable<HealthCheck> _healthChecks;
         private readonly IEnumerable<Route> _routes;
 
@@ -28,23 +27,22 @@ namespace Natron.Http
         {
             _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
             _logger = loggerFactory.CreateLogger<Component>();
-            _routes = routes ?? new Route[0];
+            _routes = routes ?? System.Array.Empty<Route>();
             _healthChecks = healthChecks ?? new List<HealthCheck>
             {
                 new HealthCheck("default", new DefaultHealthCheck())
             };
         }
 
-        public Task Run(CancellationToken cancelToken)
+        public Task RunAsync(CancellationToken cancelToken)
         {
             _logger.LogInformation("Http Component started");
-            _webHost = CreateWebHost();
-            return _webHost.RunAsync(cancelToken);
+            return CreateWebHost().RunAsync(cancelToken);
         }
 
         private IWebHost CreateWebHost()
         {
-            var webHost = WebHost.CreateDefaultBuilder(new string[0])
+            var webHost = WebHost.CreateDefaultBuilder(System.Array.Empty<string>())
                 .Configure(app =>
                 {
                     app.UseRouter(BuildRouter(app));

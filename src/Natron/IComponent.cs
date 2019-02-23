@@ -5,6 +5,6 @@ namespace Natron
 {
     public interface IComponent
     {
-        Task Run(CancellationToken cancelToken);
+        Task RunAsync(CancellationToken cancelToken);
     }
 }

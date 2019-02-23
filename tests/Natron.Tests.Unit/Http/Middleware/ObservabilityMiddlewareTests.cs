@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Natron.Tests.Unit.Http.Middleware
 {
-    public class TraceMiddlewareTests
+    public class ObservabilityMiddlewareTests
     {
         [Fact]
         public async Task TraceMiddleware_InvokeAsync()

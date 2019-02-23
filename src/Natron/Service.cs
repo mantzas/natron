@@ -38,7 +38,7 @@ namespace Natron
                 var tasks = new List<Task>();
                 foreach (var component in _components)
                 {
-                    tasks.Add(component.Run(_cancelTokenSource.Token));
+                    tasks.Add(component.RunAsync(_cancelTokenSource.Token));
                 }
 
                 await Task.WhenAny(tasks);

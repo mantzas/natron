@@ -2,7 +2,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Natron.Http;
 using NSubstitute;
 using NSubstitute.Core.Arguments;
 using Xunit;
@@ -17,18 +19,24 @@ namespace Natron.Tests.Unit
             {
                 while (!cancelToken.IsCancellationRequested)
                 {
-                    await Task.Delay(10,cancelToken);
+                    await Task.Delay(10, cancelToken);
                 }
             }
         }
-        
+
         [Fact]
         public async Task Service_RunAsync()
         {
             var cts = new CancellationTokenSource();
             var lf = Substitute.For<ILoggerFactory>();
             var cmp = new TestComponent();
-            var s = ServiceBuilder.Create(lf).ConfigureCancellationTokenSource(cts).ConfigureComponents(cmp).Build();
+            var config = new HttpConfig();
+            config.Routes.Add(Route.TracedGet("/test", context => context.Response.WriteAsync("test")));
+            var s = ServiceBuilder.Create(lf)
+                .ConfigureCancellationTokenSource(cts)
+                .ConfigureHttp(config)
+                .ConfigureComponents(cmp)
+                .Build();
             var t = s.RunAsync();
             await Task.Delay(100, cts.Token);
             cts.Cancel();

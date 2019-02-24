@@ -13,7 +13,6 @@ namespace Natron
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IComponent[] _components;
-        private readonly List<Task> _tasks;
         private readonly CancellationTokenSource _cancelTokenSource;
         private bool _cancelKeyPressed;
 
@@ -23,7 +22,6 @@ namespace Natron
             _logger = loggerFactory.CreateLogger<Service>();
             _components = components.ThrowIfNullOrEmpty(nameof(components));
             _cancelTokenSource = cts.ThrowIfNull(nameof(cts));
-            _tasks = new List<Task>();
             SetupCancelKeyPress();
         }
 
@@ -31,16 +29,17 @@ namespace Natron
         {
             try
             {
+                var tasks = new List<Task>();
                 foreach (var component in _components)
                 {
-                    _tasks.Add(component.RunAsync(_cancelTokenSource.Token));
+                    tasks.Add(component.RunAsync(_cancelTokenSource.Token));
                 }
 
-                await Task.WhenAny(_tasks);
+                await Task.WhenAny(tasks);
 
                 GracefulShutdownComponents();
 
-                await Task.WhenAll(_tasks);
+                await Task.WhenAll(tasks);
             }
             catch (Exception ex)
             {

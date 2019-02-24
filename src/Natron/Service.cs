@@ -4,12 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Natron.Http;
-using Natron.Http.Health;
 using ValidDotNet;
 
 namespace Natron
 {
-    public class Service
+    public sealed class Service
     {
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
@@ -18,11 +17,10 @@ namespace Natron
         private readonly CancellationTokenSource _cancelTokenSource;
         private bool _cancelKeyPressed;
 
-        public Service(ILoggerFactory loggerFactory,
-            IEnumerable<Route> routes = null,
-            IEnumerable<HealthCheck> healthChecks = null,
-            IEnumerable<IComponent> components = null,
-            CancellationTokenSource cts = null)
+        internal Service(ILoggerFactory loggerFactory, CancellationTokenSource cts = null,
+            HttpConfig httpConfig = default,
+            IEnumerable<IComponent> components = null
+        )
         {
             _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
             _logger = loggerFactory.CreateLogger<Service>();
@@ -30,7 +28,7 @@ namespace Natron
             _cancelTokenSource = cts ?? new CancellationTokenSource();
             _tasks = new List<Task>();
             SetupCancelKeyPress();
-            SetupDefaultHttpComponent(routes, healthChecks);
+            SetupDefaultHttpComponent(httpConfig);
             AppendComponents(components);
         }
 
@@ -67,9 +65,9 @@ namespace Natron
             };
         }
 
-        private void SetupDefaultHttpComponent(IEnumerable<Route> routes, IEnumerable<HealthCheck> healthChecks)
+        private void SetupDefaultHttpComponent(HttpConfig httpConfig)
         {
-            _components.Add(new Component(_loggerFactory, routes, healthChecks));
+            _components.Add(new Component(_loggerFactory, httpConfig));
         }
 
         private void GracefulShutdownComponents()

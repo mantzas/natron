@@ -2,9 +2,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Xunit;
 using Natron.Http;
 using NSubstitute;
+using Xunit;
 
 namespace Natron.Tests.Unit.Http
 {
@@ -15,7 +15,9 @@ namespace Natron.Tests.Unit.Http
         {
             var loggerFactory = Substitute.For<ILoggerFactory>();
             var cts = new CancellationTokenSource();
-            var cmp = new Component(loggerFactory, urls: new string[] { "http://0.0.0.0:5002", "http://0.0.0.0:5003" });
+            var config = new HttpConfig();
+            config.AddUrls("http://0.0.0.0:5002", "https://0.0.0.0:5003");
+            var cmp = new Component(loggerFactory, config);
             var t = cmp.RunAsync(cts.Token);
             await Task.Delay(10, cts.Token);
             cts.Cancel();

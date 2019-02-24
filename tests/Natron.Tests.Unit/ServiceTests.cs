@@ -14,7 +14,7 @@ namespace Natron.Tests.Unit
         {
             var cts = new CancellationTokenSource();
             var lf = Substitute.For<ILoggerFactory>();
-            var s = new Service(lf, cts: cts);
+            var s = ServiceBuilder.Create(lf).ConfigureCancellationTokenSource(cts).Build();
             var t = s.RunAsync();
             await Task.Delay(100, cts.Token);
             cts.Cancel();

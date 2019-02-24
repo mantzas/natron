@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using Natron.Http;
-using Natron.Http.Health;
 using ValidDotNet;
 
 namespace Natron
@@ -9,12 +9,15 @@ namespace Natron
     public sealed class ServiceBuilder
     {
         private ILoggerFactory _loggerFactory;
-        private IEnumerable<Route> _routes;
-        private IEnumerable<HealthCheck> _healthChecks;
-        private IEnumerable<IComponent> _components;
+        private HttpConfig _config;
+        private CancellationTokenSource _cts;
+        private readonly List<IComponent> _components;
 
         private ServiceBuilder()
         {
+            _components = new List<IComponent>();
+            _config = new HttpConfig();
+            _cts = new CancellationTokenSource();
         }
 
         public static ServiceBuilder Create(ILoggerFactory loggerFactory)
@@ -25,27 +28,27 @@ namespace Natron
             };
         }
 
-        public ServiceBuilder ConfigureRoutes(IEnumerable<Route> routes)
+        public ServiceBuilder ConfigureCancellationTokenSource(CancellationTokenSource source)
         {
-            _routes = routes.ThrowIfNull(nameof(routes));
+            _cts = source.ThrowIfNull(nameof(source));
             return this;
         }
 
-        public ServiceBuilder ConfigureHealthChecks(IEnumerable<HealthCheck> healthChecks)
+        public ServiceBuilder ConfigureHttp(HttpConfig config)
         {
-            _healthChecks = healthChecks.ThrowIfNull(nameof(healthChecks));
+            _config = config.ThrowIfNull(nameof(config));
             return this;
         }
 
         public ServiceBuilder ConfigureComponents(IEnumerable<IComponent> components)
         {
-            _components = components.ThrowIfNull(nameof(components));
+            _components.AddRange(components.ThrowIfNull(nameof(components)));
             return this;
         }
 
         public Service Build()
         {
-            return new Service(_loggerFactory, _routes, _healthChecks, _components);
+            return new Service(_loggerFactory, _cts, _config, _components);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
@@ -19,21 +18,13 @@ namespace Natron.Http
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger _logger;
-        private readonly IEnumerable<HealthCheck> _healthChecks;
-        private readonly IEnumerable<Route> _routes;
-        private readonly string[] _urls;
+        private readonly HttpConfig _config;
 
-        public Component(ILoggerFactory loggerFactory, IEnumerable<Route> routes = null,
-            IEnumerable<HealthCheck> healthChecks = null, string[] urls = null)
+        public Component(ILoggerFactory loggerFactory, HttpConfig config = default)
         {
             _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
+            _config = ApplySaneConfigDefaults(config.ThrowIfNull(nameof(config)));
             _logger = loggerFactory.CreateLogger<Component>();
-            _routes = routes ?? System.Array.Empty<Route>();
-            _healthChecks = healthChecks ?? new List<HealthCheck>
-            {
-                new HealthCheck("default", new DefaultHealthCheck())
-            };
-            _urls = urls ?? new string[] { "http://0.0.0.0:5000", "http://0.0.0.0:5001" };
         }
 
         public Task RunAsync(CancellationToken cancelToken)
@@ -44,7 +35,7 @@ namespace Natron.Http
 
         private IWebHost CreateWebHost()
         {
-            var webHost = WebHost.CreateDefaultBuilder(System.Array.Empty<string>())
+            var webHost = WebHost.CreateDefaultBuilder(Array.Empty<string>())
                 .Configure(app =>
                 {
                     app.UseRouter(BuildRouter(app));
@@ -57,7 +48,7 @@ namespace Natron.Http
                 .ConfigureAppConfiguration(builder => { })
                 .ConfigureServices(collection =>
                 {
-                    foreach (var healthCheck in _healthChecks)
+                    foreach (var healthCheck in _config.HealthChecks)
                     {
                         collection.AddHealthChecks().AddCheck(healthCheck.Name, healthCheck.Instance);
                     }
@@ -65,7 +56,7 @@ namespace Natron.Http
                     collection.AddSingleton(services => _loggerFactory);
                     collection.AddRouting();
                 })
-                .UseUrls(_urls)
+                .UseUrls(_config.Urls.ToArray())
                 .Build();
 
             return webHost;
@@ -74,7 +65,7 @@ namespace Natron.Http
         private IRouter BuildRouter(IApplicationBuilder app)
         {
             var routerBuilder = new RouteBuilder(app);
-            foreach (var route in _routes)
+            foreach (var route in _config.Routes)
             {
                 if (route.Trace)
                 {
@@ -94,6 +85,24 @@ namespace Natron.Http
             }
 
             return routerBuilder.Build();
+        }
+
+        private static HttpConfig ApplySaneConfigDefaults(HttpConfig config)
+        {
+            if (config.HealthChecks.Count == 0)
+            {
+                config.HealthChecks.Add(new HealthCheck("default", new DefaultHealthCheck()));
+            }
+
+            if (config.Urls.Count != 0)
+            {
+                return config;
+            }
+
+            config.Urls.Add("http://0.0.0.0:5000");
+            config.Urls.Add("https://0.0.0.0:5001");
+
+            return config;
         }
     }
 }

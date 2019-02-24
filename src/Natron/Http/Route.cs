@@ -17,5 +17,25 @@ namespace Natron.Http
             Handler = handler.ThrowIfNull(nameof(handler));
             Trace = trace;
         }
+
+        public static Route TracedGet(string template, RequestDelegate handler)
+        {
+            return new Route("GET", template, handler, true);
+        }
+
+        public static Route TracedPost(string template, RequestDelegate handler)
+        {
+            return new Route("POST", template, handler, true);
+        }
+
+        public static Route TracedPut(string template, RequestDelegate handler)
+        {
+            return new Route("PUT", template, handler, true);
+        }
+
+        public static Route TracedDelete(string template, RequestDelegate handler)
+        {
+            return new Route("DELETE", template, handler, true);
+        }
     }
 }

@@ -18,9 +18,8 @@ namespace Natron.Example
             loggerFactory.AddSerilog();
             loggerFactory.CreateLogger<Program>().LogInformation("Creating service");
 
-            var route = new Route("GET", "/test", context => context.Response.WriteAsync("test"), true);
             var config = new HttpConfig();
-            config.Routes.Add(route);
+            config.Routes.Add(Route.TracedGet("/test", context => context.Response.WriteAsync("test")));
 
             await ServiceBuilder.Create(loggerFactory).ConfigureHttp(config).Build().RunAsync();
         }

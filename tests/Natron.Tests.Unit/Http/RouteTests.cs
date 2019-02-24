@@ -38,5 +38,45 @@ namespace Natron.Tests.Unit.Http
             route.Handler.Should().NotBeNull();
             route.Trace.Should().BeTrue();
         }
+
+        [Fact]
+        public void Route_TracedGet()
+        {
+            var route = Route.TracedGet("TEMPLATE", context => null);
+            route.Verb.Should().Be("GET");
+            route.Template.Should().Be("TEMPLATE");
+            route.Handler.Should().NotBeNull();
+            route.Trace.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Route_TracedPost()
+        {
+            var route = Route.TracedPost("TEMPLATE", context => null);
+            route.Verb.Should().Be("POST");
+            route.Template.Should().Be("TEMPLATE");
+            route.Handler.Should().NotBeNull();
+            route.Trace.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Route_TracedPut()
+        {
+            var route = Route.TracedPut("TEMPLATE", context => null);
+            route.Verb.Should().Be("PUT");
+            route.Template.Should().Be("TEMPLATE");
+            route.Handler.Should().NotBeNull();
+            route.Trace.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Route_TracedDelete()
+        {
+            var route = Route.TracedDelete("TEMPLATE", context => null);
+            route.Verb.Should().Be("DELETE");
+            route.Template.Should().Be("TEMPLATE");
+            route.Handler.Should().NotBeNull();
+            route.Trace.Should().BeTrue();
+        }
     }
 }

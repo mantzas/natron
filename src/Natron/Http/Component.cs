@@ -79,7 +79,7 @@ namespace Natron.Http
                 }
                 else
                 {
-                    _logger.LogInformation("Adding traced route {0} {1}", route.Verb, route.Template);
+                    _logger.LogInformation("Adding route {0} {1}", route.Verb, route.Template);
                     routerBuilder.MapVerb(route.Verb, route.Template, route.Handler);
                 }
             }

@@ -20,7 +20,7 @@ namespace Natron.Example
 
             var route = new Route("GET", "/test", context => context.Response.WriteAsync("test"), true);
             var config = new HttpConfig();
-            config.AddRoutes(route);
+            config.Routes.Add(route);
 
             await ServiceBuilder.Create(loggerFactory).ConfigureHttp(config).Build().RunAsync();
         }

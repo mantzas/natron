@@ -12,24 +12,19 @@ namespace Natron
     {
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly List<IComponent> _components;
+        private readonly IComponent[] _components;
         private readonly List<Task> _tasks;
         private readonly CancellationTokenSource _cancelTokenSource;
         private bool _cancelKeyPressed;
 
-        internal Service(ILoggerFactory loggerFactory, CancellationTokenSource cts = null,
-            HttpConfig httpConfig = default,
-            IEnumerable<IComponent> components = null
-        )
+        internal Service(ILoggerFactory loggerFactory, CancellationTokenSource cts, IComponent[] components)
         {
             _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
             _logger = loggerFactory.CreateLogger<Service>();
-            _components = new List<IComponent>();
-            _cancelTokenSource = cts ?? new CancellationTokenSource();
+            _components = components.ThrowIfNullOrEmpty(nameof(components));
+            _cancelTokenSource = cts.ThrowIfNull(nameof(cts));
             _tasks = new List<Task>();
             SetupCancelKeyPress();
-            SetupDefaultHttpComponent(httpConfig);
-            AppendComponents(components);
         }
 
         public async Task RunAsync()
@@ -65,11 +60,6 @@ namespace Natron
             };
         }
 
-        private void SetupDefaultHttpComponent(HttpConfig httpConfig)
-        {
-            _components.Add(new Component(_loggerFactory, httpConfig));
-        }
-
         private void GracefulShutdownComponents()
         {
             if (_cancelKeyPressed)
@@ -79,16 +69,6 @@ namespace Natron
 
             _logger.LogWarning("Component returned unexpected. Canceling all components.");
             _cancelTokenSource.Cancel();
-        }
-
-        private void AppendComponents(IEnumerable<IComponent> components)
-        {
-            if (components == null)
-            {
-                return;
-            }
-
-            _components.AddRange(components);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Natron.Http
         private readonly ILogger _logger;
         private readonly HttpConfig _config;
 
-        public Component(ILoggerFactory loggerFactory, HttpConfig config = default)
+        public Component(ILoggerFactory loggerFactory, HttpConfig config)
         {
             _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
             _config = ApplySaneConfigDefaults(config.ThrowIfNull(nameof(config)));
@@ -43,9 +43,9 @@ namespace Natron.Http
                     app.UseHealthChecks("/health");
                     app.Build();
                 })
-                .ConfigureKestrel(options => { })
-                .ConfigureLogging(builder => { })
-                .ConfigureAppConfiguration(builder => { })
+                //.ConfigureKestrel(options => { })
+                //.ConfigureLogging(builder => { })
+                //.ConfigureAppConfiguration(builder => { })
                 .ConfigureServices(collection =>
                 {
                     foreach (var healthCheck in _config.HealthChecks)

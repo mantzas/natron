@@ -9,14 +9,12 @@ namespace Natron
     public sealed class ServiceBuilder
     {
         private ILoggerFactory _loggerFactory;
-        private HttpConfig _config;
         private CancellationTokenSource _cts;
         private readonly List<IComponent> _components;
 
         private ServiceBuilder()
         {
             _components = new List<IComponent>();
-            _config = new HttpConfig();
             _cts = new CancellationTokenSource();
         }
 
@@ -36,11 +34,11 @@ namespace Natron
 
         public ServiceBuilder ConfigureHttp(HttpConfig config)
         {
-            _config = config.ThrowIfNull(nameof(config));
+            _components.Add(new Component(_loggerFactory, config.ThrowIfNull(nameof(config))));
             return this;
         }
 
-        public ServiceBuilder ConfigureComponents(IEnumerable<IComponent> components)
+        public ServiceBuilder ConfigureComponents(params IComponent[] components)
         {
             _components.AddRange(components.ThrowIfNull(nameof(components)));
             return this;
@@ -48,7 +46,7 @@ namespace Natron
 
         public Service Build()
         {
-            return new Service(_loggerFactory, _cts, _config, _components);
+            return new Service(_loggerFactory, _cts, _components.ToArray());
         }
     }
 }

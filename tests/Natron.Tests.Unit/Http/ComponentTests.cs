@@ -16,7 +16,8 @@ namespace Natron.Tests.Unit.Http
             var loggerFactory = Substitute.For<ILoggerFactory>();
             var cts = new CancellationTokenSource();
             var config = new HttpConfig();
-            config.AddUrls("http://0.0.0.0:5002", "https://0.0.0.0:5003");
+            config.Urls.Add("http://0.0.0.0:5002");
+            config.Urls.Add("https://0.0.0.0:5003");
             var cmp = new Component(loggerFactory, config);
             var t = cmp.RunAsync(cts.Token);
             await Task.Delay(10, cts.Token);

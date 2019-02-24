@@ -21,9 +21,10 @@ namespace Natron.Http
         private readonly ILogger _logger;
         private readonly IEnumerable<HealthCheck> _healthChecks;
         private readonly IEnumerable<Route> _routes;
+        private readonly string[] _urls;
 
         public Component(ILoggerFactory loggerFactory, IEnumerable<Route> routes = null,
-            IEnumerable<HealthCheck> healthChecks = null)
+            IEnumerable<HealthCheck> healthChecks = null, string[] urls = null)
         {
             _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
             _logger = loggerFactory.CreateLogger<Component>();
@@ -32,6 +33,7 @@ namespace Natron.Http
             {
                 new HealthCheck("default", new DefaultHealthCheck())
             };
+            _urls = urls ?? new string[] { "http://0.0.0.0:5000", "http://0.0.0.0:5001" };
         }
 
         public Task RunAsync(CancellationToken cancelToken)
@@ -63,6 +65,7 @@ namespace Natron.Http
                     collection.AddSingleton(services => _loggerFactory);
                     collection.AddRouting();
                 })
+                .UseUrls(_urls)
                 .Build();
 
             return webHost;

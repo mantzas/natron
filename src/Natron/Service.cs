@@ -14,38 +14,40 @@ namespace Natron
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly List<IComponent> _components;
+        private readonly List<Task> _tasks;
         private readonly CancellationTokenSource _cancelTokenSource;
         private bool _cancelKeyPressed;
 
         public Service(ILoggerFactory loggerFactory,
             IEnumerable<Route> routes = null,
             IEnumerable<HealthCheck> healthChecks = null,
-            IEnumerable<IComponent> components = null)
+            IEnumerable<IComponent> components = null,
+            CancellationTokenSource cts = null)
         {
             _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
             _logger = loggerFactory.CreateLogger<Service>();
             _components = new List<IComponent>();
-            _cancelTokenSource = new CancellationTokenSource();
+            _cancelTokenSource = cts ?? new CancellationTokenSource();
+            _tasks = new List<Task>();
             SetupCancelKeyPress();
             SetupDefaultHttpComponent(routes, healthChecks);
             AppendComponents(components);
         }
 
-        public async Task Run()
+        public async Task RunAsync()
         {
             try
             {
-                var tasks = new List<Task>();
                 foreach (var component in _components)
                 {
-                    tasks.Add(component.RunAsync(_cancelTokenSource.Token));
+                    _tasks.Add(component.RunAsync(_cancelTokenSource.Token));
                 }
 
-                await Task.WhenAny(tasks);
+                await Task.WhenAny(_tasks);
 
                 GracefulShutdownComponents();
 
-                await Task.WhenAll(tasks);
+                await Task.WhenAll(_tasks);
             }
             catch (Exception ex)
             {

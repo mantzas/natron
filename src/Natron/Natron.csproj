@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="DisableDateTimeNow" Version="1.0.5883.39470" />
+    <PackageReference Include="Jaeger" Version="0.2.2" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Api.Analyzers" Version="2.2.0" />
@@ -10,6 +11,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="OpenTracing" Version="0.12.0" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="3.0.3" />
     <PackageReference Include="Roslynator.Analyzers" Version="2.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

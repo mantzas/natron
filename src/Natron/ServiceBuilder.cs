@@ -1,52 +1,51 @@
-using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using Natron.Config;
 using Natron.Http;
-using ValidDotNet;
 
 namespace Natron
 {
     public sealed class ServiceBuilder
     {
-        private ILoggerFactory _loggerFactory;
-        private CancellationTokenSource _cts;
-        private readonly List<IComponent> _components;
+        private readonly ServiceConfig _config;
 
-        private ServiceBuilder()
+        private ServiceBuilder(string name, ILoggerFactory loggerFactory)
         {
-            _components = new List<IComponent>();
-            _cts = new CancellationTokenSource();
+            _config = new ServiceConfig(name, loggerFactory);
         }
 
-        public static ServiceBuilder Create(ILoggerFactory loggerFactory)
+        public static ServiceBuilder Create(string name, ILoggerFactory loggerFactory)
         {
-            return new ServiceBuilder
-            {
-                _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory))
-            };
+            return new ServiceBuilder(name, loggerFactory);
         }
 
         public ServiceBuilder ConfigureCancellationTokenSource(CancellationTokenSource source)
         {
-            _cts = source.ThrowIfNull(nameof(source));
+            _config.UseCancellationTokenSource(source);
             return this;
         }
 
         public ServiceBuilder ConfigureHttp(HttpConfig config)
         {
-            _components.Add(new Component(_loggerFactory, config.ThrowIfNull(nameof(config))));
+            _config.UseComponents(new Component(_config.LoggerFactory, config));
+            return this;
+        }
+
+        public ServiceBuilder ConfigureTracingFromEnvVars()
+        {
+            _config.UseTracingConfig(TracingConfig.FromEnv());
             return this;
         }
 
         public ServiceBuilder ConfigureComponents(params IComponent[] components)
         {
-            _components.AddRange(components.ThrowIfNull(nameof(components)));
+            _config.UseComponents(components);
             return this;
         }
 
         public Service Build()
         {
-            return new Service(_loggerFactory, _cts, _components.ToArray());
+            return new Service(_config);
         }
     }
 }

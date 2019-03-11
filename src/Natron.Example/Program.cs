@@ -21,7 +21,8 @@ namespace Natron.Example
             var config = new HttpConfig();
             config.Routes.Add(Route.TracedGet("/test", context => context.Response.WriteAsync("test")));
 
-            await ServiceBuilder.Create(loggerFactory).ConfigureHttp(config).Build().RunAsync();
+            await ServiceBuilder.Create("example", loggerFactory).ConfigureHttp(config)
+                .ConfigureTracingFromEnvVars().Build().RunAsync();
         }
     }
 }

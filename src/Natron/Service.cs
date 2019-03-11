@@ -1,39 +1,35 @@
 using System;
-using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
+using Jaeger;
 using Microsoft.Extensions.Logging;
-using Natron.Http;
+using Natron.Config;
+using OpenTracing.Util;
 using ValidDotNet;
 
 namespace Natron
 {
     public sealed class Service
     {
-        private readonly ILogger _logger;
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly IComponent[] _components;
-        private readonly CancellationTokenSource _cancelTokenSource;
+        private readonly ServiceConfig _config;
+        private readonly ILogger<Service> _logger;
         private bool _cancelKeyPressed;
 
-        internal Service(ILoggerFactory loggerFactory, CancellationTokenSource cts, IComponent[] components)
+        internal Service(ServiceConfig config)
         {
-            _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
-            _logger = loggerFactory.CreateLogger<Service>();
-            _components = components.ThrowIfNullOrEmpty(nameof(components));
-            _cancelTokenSource = cts.ThrowIfNull(nameof(cts));
+            _config = config.ThrowIfNull(nameof(config));
+            _logger = config.LoggerFactory.CreateLogger<Service>();
             SetupCancelKeyPress();
+            SetupTracing();
         }
 
         public async Task RunAsync()
         {
             try
             {
-                var tasks = new List<Task>();
-                foreach (var component in _components)
-                {
-                    tasks.Add(component.RunAsync(_cancelTokenSource.Token));
-                }
+                var tasks = _config.Components
+                    .Select(component => component.RunAsync(_config.CancellationTokenSource.Token))
+                    .ToArray();
 
                 await Task.WhenAny(tasks);
 
@@ -53,7 +49,7 @@ namespace Natron
             Console.CancelKeyPress += (s, ev) =>
             {
                 _logger.LogInformation("Ctrl+C pressed.");
-                _cancelTokenSource.Cancel();
+                _config.CancellationTokenSource.Cancel();
                 _cancelKeyPressed = true;
                 ev.Cancel = true;
             };
@@ -67,7 +63,23 @@ namespace Natron
             }
 
             _logger.LogWarning("Component returned unexpected. Canceling all components.");
-            _cancelTokenSource.Cancel();
+            _config.CancellationTokenSource.Cancel();
+        }
+
+        private void SetupTracing()
+        {
+            var cfg = new Configuration(_config.Name, _config.LoggerFactory);
+            var repCfg = new Configuration.ReporterConfiguration(_config.LoggerFactory);
+            repCfg.WithLogSpans(false);
+            repCfg.WithFlushInterval(TimeSpan.FromSeconds(1));
+            repCfg.SenderConfig.WithAgentHost(_config.TracingConfig.AgentHost);
+            repCfg.SenderConfig.WithAgentPort(_config.TracingConfig.AgentPort);
+            cfg.WithReporter(repCfg);
+            cfg.WithSampler(new Configuration.SamplerConfiguration(_config.LoggerFactory));
+            cfg.SamplerConfig.WithType(_config.TracingConfig.SamplerType);
+            cfg.SamplerConfig.WithParam(_config.TracingConfig.SamplerParam);
+            //cfg.WithMetricsFactory(null);
+            GlobalTracer.Register(cfg.GetTracer());
         }
     }
 }

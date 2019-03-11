@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -6,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Natron.Http;
 using NSubstitute;
-using NSubstitute.Core.Arguments;
 using Xunit;
 
 namespace Natron.Tests.Unit
@@ -32,7 +30,7 @@ namespace Natron.Tests.Unit
             var cmp = new TestComponent();
             var config = new HttpConfig();
             config.Routes.Add(Route.TracedGet("/test", context => context.Response.WriteAsync("test")));
-            var s = ServiceBuilder.Create(lf)
+            var s = ServiceBuilder.Create("test", lf)
                 .ConfigureCancellationTokenSource(cts)
                 .ConfigureHttp(config)
                 .ConfigureComponents(cmp)

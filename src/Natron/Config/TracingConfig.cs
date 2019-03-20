@@ -6,7 +6,7 @@ namespace Natron.Config
 {
     public sealed class TracingConfig
     {
-        private const string DefaultAgentHost = "0.0.0.0";
+        private const string DefaultAgentHost = "localhost";
         private const int DefaultAgentPort = 6831;
         private const string DefaultSamplerType = "probabilistic";
         private const double DefaultSamplerParam = 0.0;

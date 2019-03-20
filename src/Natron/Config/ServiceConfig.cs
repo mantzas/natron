@@ -31,7 +31,7 @@ namespace Natron.Config
         {
             Components.AddRange(components.ThrowIfNullOrEmpty(nameof(components)));
         }
-
+        
         public void UseTracingConfig(TracingConfig tracingConfig)
         {
             TracingConfig = tracingConfig.ThrowIfNull(nameof(tracingConfig));

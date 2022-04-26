@@ -33,7 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Natron.Http\Natron.Http.csproj" />
+      <ProjectReference Include="..\..\src\Natron.Http\Natron.Http.csproj" />
     </ItemGroup>
 
 </Project>

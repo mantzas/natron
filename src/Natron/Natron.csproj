@@ -1,33 +1,23 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <PackageReference Include="DisableDateTimeNow" Version="1.0.5883.39470" />
-    <PackageReference Include="Jaeger" Version="0.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Api.Analyzers" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
-    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.6.3">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="OpenTracing" Version="0.12.0" />
-    <PackageReference Include="prometheus-net.AspNetCore" Version="3.0.3" />
-    <PackageReference Include="Roslynator.Analyzers" Version="2.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Roslynator.CodeFixes" Version="2.0.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="ValidDotNet" Version="0.2.23" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Natron</AssemblyName>
+        <RootNamespace>Natron</RootNamespace>
+        <PackageId>Natron</PackageId>
+        <Company>Natron</Company>
+        <Product>Natron</Product>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageVersion>1.0.0</PackageVersion>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+      <PackageReference Include="ValidDotNet" Version="0.2.24" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Natron.Common\Natron.Common.csproj" />
+    </ItemGroup>
 
 </Project>

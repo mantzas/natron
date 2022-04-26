@@ -1,85 +1,63 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Jaeger;
 using Microsoft.Extensions.Logging;
 using Natron.Config;
-using OpenTracing.Util;
 using ValidDotNet;
 
-namespace Natron
+namespace Natron;
+
+public sealed class Service
 {
-    public sealed class Service
+    private readonly ServiceConfig _config;
+    private readonly ILogger<Service> _logger;
+    private bool _cancelKeyPressed;
+
+    internal Service(ServiceConfig config)
     {
-        private readonly ServiceConfig _config;
-        private readonly ILogger<Service> _logger;
-        private bool _cancelKeyPressed;
+        _config = config.ThrowIfNull(nameof(config));
+        _logger = config.LoggerFactory.CreateLogger<Service>();
+        SetupCancelKeyPress();
+    }
 
-        internal Service(ServiceConfig config)
+    public async Task RunAsync()
+    {
+        try
         {
-            _config = config.ThrowIfNull(nameof(config));
-            _logger = config.LoggerFactory.CreateLogger<Service>();
-            SetupCancelKeyPress();
-            SetupTracing();
+            _logger.LogInformation($"service {_config.Name} started");
+
+            var tasks = _config.Components
+                .Select(component => component.RunAsync(_config.CancellationTokenSource.Token))
+                .ToArray();
+
+            _logger.LogInformation($"{_config.Components.Count} component(s) started");
+
+            await Task.WhenAny(tasks);
+
+            GracefulShutdownComponents();
+
+            await Task.WhenAll(tasks);
         }
-
-        public async Task RunAsync()
+        catch (Exception ex)
         {
-            try
-            {
-                var tasks = _config.Components
-                    .Select(component => component.RunAsync(_config.CancellationTokenSource.Token))
-                    .ToArray();
-
-                await Task.WhenAny(tasks);
-
-                GracefulShutdownComponents();
-
-                await Task.WhenAll(tasks);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Exception caught, gracefully shutting down components.");
-                GracefulShutdownComponents();
-            }
+            _logger.LogError(ex, "exception caught, gracefully shutting down components");
+            GracefulShutdownComponents();
         }
+    }
 
-        private void SetupCancelKeyPress()
+    private void SetupCancelKeyPress()
+    {
+        Console.CancelKeyPress += (_, ev) =>
         {
-            Console.CancelKeyPress += (s, ev) =>
-            {
-                _logger.LogInformation("Ctrl+C pressed.");
-                _config.CancellationTokenSource.Cancel();
-                _cancelKeyPressed = true;
-                ev.Cancel = true;
-            };
-        }
-
-        private void GracefulShutdownComponents()
-        {
-            if (_cancelKeyPressed)
-            {
-                return;
-            }
-
-            _logger.LogWarning("Component returned unexpected. Canceling all components.");
+            _logger.LogInformation("ctrl+c pressed");
+            _cancelKeyPressed = true;
             _config.CancellationTokenSource.Cancel();
-        }
+            ev.Cancel = true;
+        };
+    }
 
-        private void SetupTracing()
-        {
-            var cfg = new Configuration(_config.Name, _config.LoggerFactory);
-            var repCfg = new Configuration.ReporterConfiguration(_config.LoggerFactory);
-            repCfg.WithLogSpans(false);
-            repCfg.WithFlushInterval(TimeSpan.FromSeconds(1));
-            repCfg.SenderConfig.WithAgentHost(_config.TracingConfig.AgentHost);
-            repCfg.SenderConfig.WithAgentPort(_config.TracingConfig.AgentPort);
-            cfg.WithReporter(repCfg);
-            cfg.WithSampler(new Configuration.SamplerConfiguration(_config.LoggerFactory));
-            cfg.SamplerConfig.WithType(_config.TracingConfig.SamplerType);
-            cfg.SamplerConfig.WithParam(_config.TracingConfig.SamplerParam);
-            //cfg.WithMetricsFactory(null);
-            GlobalTracer.Register(cfg.GetTracer());
-        }
+    private void GracefulShutdownComponents()
+    {
+        if (_cancelKeyPressed) return;
+
+        _logger.LogWarning("component returned unexpected. Canceling all components");
+        _config.CancellationTokenSource.Cancel();
     }
 }

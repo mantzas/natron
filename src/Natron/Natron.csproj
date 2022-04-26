@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Natron.Common\Natron.Common.csproj" />
+      <ProjectReference Include="..\Natron.Common\Natron.Common.csproj" />
     </ItemGroup>
 
 </Project>

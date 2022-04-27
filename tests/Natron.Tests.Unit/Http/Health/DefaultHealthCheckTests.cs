@@ -4,7 +4,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Natron.Http.Health;
 using Xunit;
 
-namespace Natron.Http.Tests.Unit.Health;
+namespace Natron.Tests.Unit.Http.Health;
 
 public class DefaultHealthCheckTests
 {

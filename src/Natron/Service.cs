@@ -21,13 +21,13 @@ public sealed class Service
     {
         try
         {
-            _logger.LogInformation($"service {_config.Name} started");
+            _logger.LogInformation("service {_config.Name} started", _config.Name);
 
             var tasks = _config.Components
                 .Select(component => component.RunAsync(_config.CancellationTokenSource.Token))
                 .ToArray();
 
-            _logger.LogInformation($"{_config.Components.Count} component(s) started");
+            _logger.LogInformation("{_config.Components.Count} component(s) started", _config.Components.Count);
 
             await Task.WhenAny(tasks);
 

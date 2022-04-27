@@ -1,4 +1,4 @@
-﻿namespace Natron.Common;
+﻿namespace Natron;
 
 public interface IComponent
 {

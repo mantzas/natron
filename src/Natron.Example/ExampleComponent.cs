@@ -1,5 +1,3 @@
-using Natron.Common;
-
 namespace Natron.Example;
 
 public class TestComponent : IComponent

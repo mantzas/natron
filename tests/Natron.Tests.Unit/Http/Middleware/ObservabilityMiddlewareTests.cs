@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Natron.Http.Middleware;
 using Xunit;
 
-namespace Natron.Http.Tests.Unit.Middleware;
+namespace Natron.Tests.Unit.Http.Middleware;
 
 public class ObservabilityMiddlewareTests
 {

@@ -1,8 +1,9 @@
 using System;
 using FluentAssertions;
+using Natron.Http;
 using Xunit;
 
-namespace Natron.Http.Tests.Unit;
+namespace Natron.Tests.Unit.Http;
 
 public class RouteTests
 {

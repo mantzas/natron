@@ -3,10 +3,11 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Natron.Http;
 using NSubstitute;
 using Xunit;
 
-namespace Natron.Http.Tests.Unit;
+namespace Natron.Tests.Unit.Http;
 
 public class ComponentTests
 {
@@ -18,8 +19,8 @@ public class ComponentTests
         var config = new HttpConfig();
         config.Urls.Add("http://0.0.0.0:5002");
         config.Urls.Add("https://0.0.0.0:5003");
-        config.Routes.Add(Route.TracedGet("/test", context => context.Response.WriteAsync("test", cancellationToken: cts.Token)));
-        config.Routes.Add(new Route("GET", "/test", context => context.Response.WriteAsync("test", cancellationToken: cts.Token), false));
+        config.Routes.Add(Route.TracedGet("/test", context => context.Response.WriteAsync("test", cts.Token)));
+        config.Routes.Add(new Route("GET", "/test", context => context.Response.WriteAsync("test", cts.Token), false));
         var cmp = new Component(loggerFactory, config);
         var t = cmp.RunAsync(cts.Token);
         await Task.Delay(10, cts.Token);

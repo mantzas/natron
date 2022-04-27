@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Natron.Common;
 using Natron.Http.Health;
 using Natron.Http.Middleware;
 using ValidDotNet;
@@ -62,7 +61,7 @@ public class Component : IComponent
         foreach (var route in _config.Routes)
             if (route.Trace)
             {
-                _logger.LogInformation($"Adding traced route {route.Verb} {route.Template}");
+                _logger.LogInformation("Adding traced route {route.Verb} {route.Template}", route.Verb, route.Template);
                 routerBuilder.MapMiddlewareVerb(route.Verb, route.Template, action =>
                     {
                         action.UseMiddleware<ObservabilityMiddleware>();
@@ -72,7 +71,7 @@ public class Component : IComponent
             }
             else
             {
-                _logger.LogInformation($"Adding route {route.Verb} {route.Template}");
+                _logger.LogInformation("Adding route {route.Verb} {route.Template}", route.Verb, route.Template);
                 routerBuilder.MapVerb(route.Verb, route.Template, route.Handler);
             }
 

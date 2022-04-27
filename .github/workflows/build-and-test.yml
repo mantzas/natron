@@ -9,9 +9,8 @@ on:
       - '**.csproj'
 
 jobs:
-  build-and-test:
-
-    name: build-and-test-${{matrix.os}}
+  ci:
+    name: ci
     runs-on: ubuntu-latest    
 
     steps:
@@ -23,9 +22,6 @@ jobs:
 
       - name: Install dependencies
         run: dotnet restore
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
 
       - name: Test
         run: dotnet test --no-restore --verbosity normal

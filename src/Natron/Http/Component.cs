@@ -7,16 +7,15 @@ using Microsoft.Extensions.Logging;
 using Natron.Common;
 using Natron.Http.Health;
 using Natron.Http.Middleware;
-using Prometheus;
 using ValidDotNet;
 
 namespace Natron.Http;
 
 public class Component : IComponent
 {
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly ILogger _logger;
     private readonly HttpConfig _config;
+    private readonly ILogger _logger;
+    private readonly ILoggerFactory _loggerFactory;
 
     public Component(ILoggerFactory loggerFactory, HttpConfig config)
     {
@@ -37,7 +36,6 @@ public class Component : IComponent
             .Configure(app =>
             {
                 app.UseRouter(BuildRouter(app));
-                app.UseMetricServer();
                 app.UseHealthChecks("/health");
                 app.Build();
             })
@@ -47,9 +45,7 @@ public class Component : IComponent
             .ConfigureServices(collection =>
             {
                 foreach (var healthCheck in _config.HealthChecks)
-                {
                     collection.AddHealthChecks().AddCheck(healthCheck.Name, healthCheck.Instance);
-                }
 
                 collection.AddSingleton(_ => _loggerFactory);
                 collection.AddRouting();
@@ -64,7 +60,6 @@ public class Component : IComponent
     {
         var routerBuilder = new RouteBuilder(app);
         foreach (var route in _config.Routes)
-        {
             if (route.Trace)
             {
                 _logger.LogInformation($"Adding traced route {route.Verb} {route.Template}");
@@ -80,7 +75,6 @@ public class Component : IComponent
                 _logger.LogInformation($"Adding route {route.Verb} {route.Template}");
                 routerBuilder.MapVerb(route.Verb, route.Template, route.Handler);
             }
-        }
 
         return routerBuilder.Build();
     }
@@ -88,14 +82,9 @@ public class Component : IComponent
     private static HttpConfig ApplySaneConfigDefaults(HttpConfig config)
     {
         if (config.HealthChecks.Count == 0)
-        {
             config.HealthChecks.Add(new HealthCheck("default", new DefaultHealthCheck()));
-        }
 
-        if (config.Urls.Count != 0)
-        {
-            return config;
-        }
+        if (config.Urls.Count != 0) return config;
 
         config.Urls.Add("http://0.0.0.0:5000");
         config.Urls.Add("https://0.0.0.0:5001");

@@ -4,16 +4,15 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Natron.Http.Health;
 using Xunit;
 
-namespace Natron.Tests.Unit.Http.Health
+namespace Natron.Tests.Unit.Http.Health;
+
+public class DefaultHealthCheckTests
 {
-    public class DefaultHealthCheckTests
+    [Fact]
+    public async Task DefaultHealthCheck_CheckHealthAsync()
     {
-        [Fact]
-        public async Task DefaultHealthCheck_CheckHealthAsync()
-        {
-            var result = await new DefaultHealthCheck().CheckHealthAsync(new HealthCheckContext());
-            result.Should().NotBeNull();
-            result.Status.Should().Be(HealthStatus.Healthy);
-        }
+        var result = await new DefaultHealthCheck().CheckHealthAsync(new HealthCheckContext());
+        result.Should().NotBeNull();
+        result.Status.Should().Be(HealthStatus.Healthy);
     }
 }

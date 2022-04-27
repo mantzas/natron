@@ -1,10 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿namespace Natron;
 
-namespace Natron
+public interface IComponent
 {
-    public interface IComponent
-    {
-        Task RunAsync(CancellationToken cancelToken);
-    }
+    Task RunAsync(CancellationToken cancelToken);
 }

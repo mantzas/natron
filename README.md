@@ -1,2 +1,2 @@
-# natron [![CircleCI](https://circleci.com/gh/mantzas/natron.svg?style=svg)](https://circleci.com/gh/mantzas/natron)
+# natron
 Microservice framework

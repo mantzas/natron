@@ -17,8 +17,6 @@ public class ComponentTests
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var cts = new CancellationTokenSource();
         var config = new HttpConfig();
-        config.Urls.Add("http://0.0.0.0:5002");
-        config.Urls.Add("https://0.0.0.0:5003");
         config.Routes.Add(Route.TracedGet("/test", context => context.Response.WriteAsync("test", cts.Token)));
         config.Routes.Add(new Route("GET", "/test", context => context.Response.WriteAsync("test", cts.Token), false));
         var cmp = new Component(loggerFactory, config);

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Natron.Http.Health;
 using Natron.Http.Middleware;
 using ValidDotNet;
 
@@ -19,7 +18,7 @@ public class Component : IComponent
     public Component(ILoggerFactory loggerFactory, HttpConfig config)
     {
         _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
-        _config = ApplySaneConfigDefaults(config.ThrowIfNull(nameof(config)));
+        _config = config.ThrowIfNull(nameof(config));
         _logger = loggerFactory.CreateLogger<Component>();
     }
 
@@ -38,8 +37,8 @@ public class Component : IComponent
                 app.UseHealthChecks("/health");
                 app.Build();
             })
-            //.ConfigureKestrel(options => { })
-            //.ConfigureLogging(builder => { })
+            //.ConfigureKestrel(options => { options.})
+            //.ConfigureLogging(builder => { builder. })
             //.ConfigureAppConfiguration(builder => { })
             .ConfigureServices(collection =>
             {
@@ -49,7 +48,9 @@ public class Component : IComponent
                 collection.AddSingleton(_ => _loggerFactory);
                 collection.AddRouting();
             })
-            .UseUrls(_config.Urls.ToArray())
+            .UseUrls(_config.Urls)
+            .UseShutdownTimeout(_config.ShutdownTimeout)
+            .UseKestrel()
             .Build();
 
         return webHost;
@@ -61,7 +62,7 @@ public class Component : IComponent
         foreach (var route in _config.Routes)
             if (route.Trace)
             {
-                _logger.LogInformation("Adding traced route {route.Verb} {route.Template}", route.Verb, route.Template);
+                _logger.LogInformation("Adding traced route {0} {1}", route.Verb, route.Template);
                 routerBuilder.MapMiddlewareVerb(route.Verb, route.Template, action =>
                     {
                         action.UseMiddleware<ObservabilityMiddleware>();
@@ -71,23 +72,10 @@ public class Component : IComponent
             }
             else
             {
-                _logger.LogInformation("Adding route {route.Verb} {route.Template}", route.Verb, route.Template);
+                _logger.LogInformation("Adding route {0} {1}", route.Verb, route.Template);
                 routerBuilder.MapVerb(route.Verb, route.Template, route.Handler);
             }
 
         return routerBuilder.Build();
-    }
-
-    private static HttpConfig ApplySaneConfigDefaults(HttpConfig config)
-    {
-        if (config.HealthChecks.Count == 0)
-            config.HealthChecks.Add(new HealthCheck("default", new DefaultHealthCheck()));
-
-        if (config.Urls.Count != 0) return config;
-
-        config.Urls.Add("http://0.0.0.0:5000");
-        config.Urls.Add("https://0.0.0.0:5001");
-
-        return config;
     }
 }

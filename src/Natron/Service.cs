@@ -1,10 +1,9 @@
 using Microsoft.Extensions.Logging;
-using Natron.Config;
 using ValidDotNet;
 
 namespace Natron;
 
-public sealed class Service
+public sealed class Service : IService
 {
     private readonly ServiceConfig _config;
     private readonly ILogger<Service> _logger;
@@ -21,13 +20,13 @@ public sealed class Service
     {
         try
         {
-            _logger.LogInformation("service {_config.Name} started", _config.Name);
+            _logger.LogInformation("service {0} started", _config.Name);
 
             var tasks = _config.Components
                 .Select(component => component.RunAsync(_config.CancellationTokenSource.Token))
                 .ToArray();
 
-            _logger.LogInformation("{_config.Components.Count} component(s) started", _config.Components.Count);
+            _logger.LogInformation("{0} component(s) started", _config.Components.Count);
 
             await Task.WhenAny(tasks);
 

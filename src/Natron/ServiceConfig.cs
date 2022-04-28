@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using ValidDotNet;
 
-namespace Natron.Config;
+namespace Natron;
 
 public sealed class ServiceConfig
 {

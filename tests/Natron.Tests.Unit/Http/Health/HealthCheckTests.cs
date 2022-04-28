@@ -1,6 +1,8 @@
 using System;
 using FluentAssertions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Natron.Http.Health;
+using NSubstitute;
 using Xunit;
 
 namespace Natron.Tests.Unit.Http.Health;
@@ -24,7 +26,7 @@ public class HealthCheckTests
     [Fact]
     public void HealthCheck_Constructor_Succeeds()
     {
-        var route = new HealthCheck("NAME", new DefaultHealthCheck());
+        var route = new HealthCheck("NAME", Substitute.For<IHealthCheck>());
         route.Should().NotBeNull();
         route.Name.Should().Be("NAME");
         route.Instance.Should().NotBeNull();

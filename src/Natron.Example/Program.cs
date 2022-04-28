@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Natron;
-using Natron.Example;
+using Natron.Http;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
@@ -11,4 +11,6 @@ loggerFactory.CreateLogger<Program>().LogInformation("creating service");
 
 var cts = new CancellationTokenSource();
 
-await ServiceBuilder.Create("example", loggerFactory, cts).ConfigureComponents(new TestComponent()).Build().RunAsync();
+var config = new HttpConfig();
+await ServiceBuilder.Create("example", loggerFactory, cts).ConfigureComponents(new Component(loggerFactory, config))
+    .Build().RunAsync();

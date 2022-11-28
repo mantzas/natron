@@ -1,0 +1,23 @@
+using Amazon.SQS.Model;
+using ValidDotNet;
+
+namespace Natron.Consumer.AWS.SQS;
+
+public sealed class Config
+{
+    public Config(string queueUrl, Action<Message> processFunc, int visibilityTimeout = 10, int waitTimeSeconds = 10,
+        int maxNumberOfMessages = 20)
+    {
+        QueueUrl = queueUrl.ThrowIfNullOrWhitespace(nameof(queueUrl));
+        ProcessFunc = processFunc.ThrowIfNull(nameof(processFunc));
+        MaxNumberOfMessages = maxNumberOfMessages.ThrowIfLessOrEqual(nameof(maxNumberOfMessages), 0);
+        WaitTimeSeconds = waitTimeSeconds.ThrowIfLessOrEqual(nameof(waitTimeSeconds), 0);
+        VisibilityTimeout = visibilityTimeout.ThrowIfLessOrEqual(nameof(visibilityTimeout), 0);
+    }
+
+    public int VisibilityTimeout { get; }
+    public int WaitTimeSeconds { get; }
+    public int MaxNumberOfMessages { get; }
+    public string QueueUrl { get; }
+    public Action<Message> ProcessFunc { get; }
+}

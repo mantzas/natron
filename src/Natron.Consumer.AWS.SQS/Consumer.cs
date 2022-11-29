@@ -1,89 +1,112 @@
 ﻿using System.Net;
-using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
+using Amazon.SQS.Util;
 using Microsoft.Extensions.Logging;
+using Prometheus;
 using ValidDotNet;
 
 namespace Natron.Consumer.AWS.SQS;
 
 public class Consumer : IComponent
 {
-    private readonly Config _config;
-    private readonly AWSCredentials _credentials;
-    private readonly ILogger _logger;
-    private readonly AmazonSQSConfig _sqsConfig;
+    private static readonly Gauge MessageAgeGauge = Metrics
+        .CreateGauge("consumer_sqs_message_age_seconds", "Messages age in seconds.", "queue");
 
-    public Consumer(ILoggerFactory loggerFactory, Config config)
+
+    private static readonly Gauge QueueSizeGauge = Metrics
+        .CreateGauge("consumer_sqs_queue_size", "Queue size.", "queue", "state");
+
+    private readonly IAmazonSQS _client;
+
+    private readonly Config _config;
+    private readonly ILogger _logger;
+    private readonly ILoggerFactory _loggerFactory;
+
+    public Consumer(ILoggerFactory loggerFactory, IAmazonSQS client, Config config)
     {
+        _client = client.ThrowIfNull(nameof(client));
         _config = config.ThrowIfNull(nameof(config));
-        _logger = loggerFactory.ThrowIfNull(nameof(loggerFactory)).CreateLogger<Consumer>();
-        _credentials = new AnonymousAWSCredentials();
-        _sqsConfig = new AmazonSQSConfig();
+        _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
+        _logger = _loggerFactory.CreateLogger<Consumer>();
     }
 
     public async Task RunAsync(CancellationToken cancelToken)
     {
-        var sqsClient = new AmazonSQSClient(_credentials, _sqsConfig);
+        await Task.Factory.StartNew(async () => await GetStatsAsync(_client, cancelToken),
+            TaskCreationOptions.LongRunning);
+
 
         while (!cancelToken.IsCancellationRequested)
         {
-            var messages = await GetMessages(sqsClient, cancelToken);
+            var messages = await GetMessagesAsync(_client, cancelToken);
 
-            foreach (var message in messages)
-            {
-                if (cancelToken.IsCancellationRequested) return;
+            if (messages.Count == 0) continue;
 
-                _config.ProcessFunc(message);
+            var batch = Batch.From(_loggerFactory, cancelToken, _client, _config.QueueUrl, messages);
 
-                await DeleteMessage(sqsClient, cancelToken, message);
-            }
+            _config.ProcessFunc(batch);
         }
     }
 
-    private async Task<List<Message>> GetMessages(IAmazonSQS sqsClient, CancellationToken cancelToken)
+    private async Task<List<Amazon.SQS.Model.Message>> GetMessagesAsync(IAmazonSQS client,
+        CancellationToken cancelToken)
     {
         var request = new ReceiveMessageRequest
         {
-            MessageAttributeNames = new List<string> { "All" },
-            AttributeNames = new List<string> { "All" },
+            MessageAttributeNames = new List<string> { SQSConstants.ATTRIBUTE_ALL },
+            AttributeNames = new List<string> { SQSConstants.ATTRIBUTE_CREATED_TIMESTAMP },
             QueueUrl = _config.QueueUrl,
             MaxNumberOfMessages = _config.MaxNumberOfMessages,
             VisibilityTimeout = _config.VisibilityTimeout,
             WaitTimeSeconds = _config.WaitTimeSeconds
         };
 
-        var response = await sqsClient.ReceiveMessageAsync(request, cancelToken).ConfigureAwait(false);
+        var response = await client.ReceiveMessageAsync(request, cancelToken).ConfigureAwait(false);
 
         // TODO: clarify about the status code
         if (response.HttpStatusCode == HttpStatusCode.OK) return response.Messages;
 
         _logger.LogError("Failed to receive messages with HTTP status code {HttpStatusCode}",
             response.HttpStatusCode);
-        return new List<Message>();
+        return new List<Amazon.SQS.Model.Message>();
     }
 
-    private async Task DeleteMessage(IAmazonSQS sqsClient, CancellationToken cancelToken, Message msg)
+    private async Task GetStatsAsync(IAmazonSQS client, CancellationToken cancelToken)
     {
-        var request = new DeleteMessageRequest
-        {
-            QueueUrl = _config.QueueUrl,
-            ReceiptHandle = msg.ReceiptHandle
-        };
-
         try
         {
-            var deleteResponse = await sqsClient.DeleteMessageAsync(request, cancelToken).ConfigureAwait(false);
+            while (!cancelToken.IsCancellationRequested)
+            {
+                var request = new GetQueueAttributesRequest
+                {
+                    QueueUrl = _config.QueueUrl,
+                    AttributeNames = new List<string>
+                    {
+                        SQSConstants.ATTRIBUTE_APPROXIMATE_NUMBER_OF_MESSAGES,
+                        SQSConstants.ATTRIBUTE_APPROXIMATE_NUMBER_OF_MESSAGES_DELAYED,
+                        SQSConstants.ATTRIBUTE_APPROXIMATE_NUMBER_OF_MESSAGES_NOT_VISIBLE
+                    }
+                };
+                var response = await client.GetQueueAttributesAsync(request, cancelToken).ConfigureAwait(false);
 
-            // TODO: clarify about the status code
-            if (deleteResponse.HttpStatusCode != HttpStatusCode.OK)
-                _logger.LogWarning("Failed to delete message {MessageId} with HTTP status {HttpStatusCode}",
-                    msg.MessageId, deleteResponse.HttpStatusCode);
+                // TODO: check this out
+                if (response.HttpStatusCode == HttpStatusCode.OK)
+                {
+                    QueueSizeGauge.WithLabels(_config.QueueUrl, "available")
+                        .Set(response.ApproximateNumberOfMessages);
+                    QueueSizeGauge.WithLabels(_config.QueueUrl, "delayed")
+                        .Set(response.ApproximateNumberOfMessagesDelayed);
+                    QueueSizeGauge.WithLabels(_config.QueueUrl, "invisible")
+                        .Set(response.ApproximateNumberOfMessagesNotVisible);
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(_config.StatsInterval), cancelToken);
+            }
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to delete message {MessageId} withe exception {Exception}",
-                msg.MessageId, e.ToString());
+            _logger.LogError(e, "Failed to get queue attributes");
         }
     }
 }

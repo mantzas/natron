@@ -63,7 +63,7 @@ public class Consumer : IComponent
         // TODO: clarify about the status code
         if (response.HttpStatusCode == HttpStatusCode.OK) return response.Messages;
 
-        _logger.LogError("Failed to receive messages with HTTP status code {HttpStatusCode}",
+        _logger.LogError("Failed to receive messages with HTTP status code {ResponseHttpStatusCode}",
             response.HttpStatusCode);
         return new List<Amazon.SQS.Model.Message>();
     }

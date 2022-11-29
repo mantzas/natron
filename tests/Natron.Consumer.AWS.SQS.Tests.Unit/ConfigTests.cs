@@ -1,15 +1,14 @@
-using Amazon.SQS.Model;
 using FluentAssertions;
 
 namespace Natron.Consumer.AWS.SQS.Tests.Unit;
 
-public class UnitTest1
+public class ConfigTests
 {
     [Fact]
     public void TestConfig()
     {
         const string url = "URL";
-        Action<Message> fn = _ => { };
+        Action<Batch> fn = _ => { };
 
         var cfg = new Config(url, fn);
         cfg.QueueUrl.Should().Be(url);
@@ -17,5 +16,6 @@ public class UnitTest1
         cfg.VisibilityTimeout.Should().Be(10);
         cfg.WaitTimeSeconds.Should().Be(10);
         cfg.MaxNumberOfMessages.Should().Be(20);
+        cfg.StatsInterval.Should().Be(10);
     }
 }

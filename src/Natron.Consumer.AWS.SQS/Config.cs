@@ -4,7 +4,7 @@ namespace Natron.Consumer.AWS.SQS;
 
 public sealed class Config
 {
-    public Config(string queueUrl, Action<Batch> processFunc, int visibilityTimeout = 10,
+    public Config(string queueUrl, Func<Batch, Task> processFunc, int visibilityTimeout = 10,
         int waitTimeSeconds = 10,
         int maxNumberOfMessages = 20, int statsInterval = 10)
     {
@@ -20,6 +20,6 @@ public sealed class Config
     public int WaitTimeSeconds { get; }
     public int MaxNumberOfMessages { get; }
     public string QueueUrl { get; }
-    public Action<Batch> ProcessFunc { get; }
+    public Func<Batch, Task> ProcessFunc { get; }
     public int StatsInterval { get; }
 }

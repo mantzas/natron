@@ -10,10 +10,6 @@ namespace Natron.Consumer.AWS.SQS;
 
 public class Consumer : IComponent
 {
-    private static readonly Gauge MessageAgeGauge = Metrics
-        .CreateGauge("consumer_sqs_message_age_seconds", "Messages age in seconds.", "queue");
-
-
     private static readonly Gauge QueueSizeGauge = Metrics
         .CreateGauge("consumer_sqs_queue_size", "Queue size.", "queue", "state");
 
@@ -45,7 +41,7 @@ public class Consumer : IComponent
 
             var batch = Batch.From(_loggerFactory, cancelToken, _client, _config.QueueUrl, messages);
 
-            _config.ProcessFunc(batch);
+            await _config.ProcessFunc(batch);
         }
     }
 

@@ -46,10 +46,11 @@ public class ConsumerTests
 
         Batch expectedBatch = null!;
 
-        void ProcessFunc(Batch btc)
+        Task ProcessFunc(Batch btc)
         {
             expectedBatch = btc;
             cts.Cancel();
+            return Task.FromResult(0);
         }
 
         var config = new Config(queueUrl, ProcessFunc);

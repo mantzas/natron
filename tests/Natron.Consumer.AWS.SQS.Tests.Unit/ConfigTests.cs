@@ -8,7 +8,7 @@ public class ConfigTests
     public void TestConfig()
     {
         const string url = "URL";
-        Action<Batch> fn = _ => { };
+        Func<Batch, Task> fn = batch => Task.FromResult(0);
 
         var cfg = new Config(url, fn);
         cfg.QueueUrl.Should().Be(url);

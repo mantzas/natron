@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using Amazon.SQS;
 using Amazon.SQS.Model;
@@ -18,6 +19,9 @@ public class Message
         .CreateCounter("consumer_sqs_message_counter",
             "AWS SQS message processing counter by queue and state e.g. fetched, ack and nack.", "queue", "state");
 
+    private static readonly Gauge MessageAgeGauge = Metrics
+        .CreateGauge("consumer_sqs_message_age_seconds", "AWS SQS messages age in seconds.", "queue");
+
     private readonly CancellationToken _cancellationToken;
     private readonly IAmazonSQS _client;
     private readonly ILogger _logger;
@@ -32,6 +36,7 @@ public class Message
         _client = client.ThrowIfNull(nameof(client));
         Raw = message.ThrowIfNull(nameof(message));
         MessageCount(MessageStatusFetched);
+        MessageAge();
     }
 
     public Amazon.SQS.Model.Message Raw { get; }
@@ -69,5 +74,16 @@ public class Message
     private void MessageCount(string status)
     {
         MessageCounter.WithLabels(_queueUrl, status).Inc();
+    }
+
+    private void MessageAge()
+    {
+        if (!Raw.Attributes.TryGetValue("SentTimestamp", out var value)) return;
+
+        if (!int.TryParse(value, CultureInfo.InvariantCulture, out var epoch))
+            return;
+
+        MessageAgeGauge.WithLabels(_queueUrl)
+            .Set(DateTime.UtcNow.Subtract(DateTime.UnixEpoch.AddSeconds(epoch)).Seconds);
     }
 }

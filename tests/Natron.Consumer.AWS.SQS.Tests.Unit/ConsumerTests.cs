@@ -24,14 +24,15 @@ public class ConsumerTests
 
         var client = Substitute.For<IAmazonSQS>();
 
+        var failureResponse = new ReceiveMessageResponse
+        {
+            HttpStatusCode = HttpStatusCode.BadRequest
+        };
+
         var successReturn = new ReceiveMessageResponse
         {
             HttpStatusCode = HttpStatusCode.OK,
             Messages = rawMessages
-        };
-        var failureResponse = new ReceiveMessageResponse
-        {
-            HttpStatusCode = HttpStatusCode.BadRequest
         };
 
         client.ReceiveMessageAsync(Arg.Any<ReceiveMessageRequest>(), Arg.Any<CancellationToken>())

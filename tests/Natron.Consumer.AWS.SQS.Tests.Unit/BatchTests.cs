@@ -5,6 +5,7 @@ using NSubstitute;
 
 namespace Natron.Consumer.AWS.SQS.Tests.Unit;
 
+[Trait("Category", "Unit")]
 public class BatchTests
 {
     [Fact]

@@ -2,6 +2,7 @@ using FluentAssertions;
 
 namespace Natron.Consumer.AWS.SQS.Tests.Unit;
 
+[Trait("Category", "Unit")]
 public class ConfigTests
 {
     [Fact]

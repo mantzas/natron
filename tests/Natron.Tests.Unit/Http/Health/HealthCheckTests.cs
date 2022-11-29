@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Natron.Tests.Unit.Http.Health;
 
+[Trait("Category", "Unit")]
 public class HealthCheckTests
 {
     [Fact]

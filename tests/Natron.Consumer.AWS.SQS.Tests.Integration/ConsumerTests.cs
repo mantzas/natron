@@ -7,6 +7,7 @@ using NSubstitute;
 
 namespace Natron.Consumer.AWS.SQS.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public class ConsumerTests
 {
     [Fact]

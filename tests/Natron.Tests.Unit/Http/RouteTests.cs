@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Natron.Tests.Unit.Http;
 
+[Trait("Category", "Unit")]
 public class RouteTests
 {
     [Fact]

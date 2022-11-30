@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Natron.Tests.Unit;
 
+[Trait("Category", "Unit")]
 public class ServiceTests
 {
     [Fact]

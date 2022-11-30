@@ -6,6 +6,7 @@ using Xunit;
 
 namespace Natron.Tests.Unit.Http.Middleware;
 
+[Trait("Category", "Unit")]
 public class ObservabilityMiddlewareTests
 {
     [Fact]

@@ -1,4 +1,5 @@
 using System.Net;
+using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using FluentAssertions;
@@ -59,7 +60,7 @@ public class ConsumerTests
 
     private static async Task<Tuple<IAmazonSQS, string>> CreateClientAndQueueAsync(IEnumerable<string> messageIds)
     {
-        var client = new AmazonSQSClient(new AmazonSQSConfig
+        var client = new AmazonSQSClient(new AnonymousAWSCredentials(), new AmazonSQSConfig
         {
             ServiceURL = "http://localhost:4566"
         });

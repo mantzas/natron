@@ -9,11 +9,15 @@ public class ConfigTests
     public void TestConfig()
     {
         const string url = "URL";
-        Func<Batch, Task> fn = batch => Task.FromResult(0);
 
-        var cfg = new Config(url, fn);
+        Task Fn(Batch _)
+        {
+            return Task.FromResult(0);
+        }
+
+        var cfg = new Config(url, Fn);
         cfg.QueueUrl.Should().Be(url);
-        cfg.ProcessFunc.Should().Be(fn);
+        cfg.ProcessFunc.Should().Be((Func<Batch, Task>)Fn);
         cfg.VisibilityTimeout.Should().Be(10);
         cfg.WaitTimeSeconds.Should().Be(10);
         cfg.MaxNumberOfMessages.Should().Be(20);

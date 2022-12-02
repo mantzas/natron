@@ -20,13 +20,13 @@ public sealed class Service : IService
     {
         try
         {
-            _logger.LogInformation("service {0} started", _config.Name);
+            _logger.LogInformation("service {ConfigName} started", _config.Name);
 
             var tasks = _config.Components
                 .Select(component => component.RunAsync(_config.CancellationTokenSource.Token))
                 .ToArray();
 
-            _logger.LogInformation("{0} component(s) started", _config.Components.Count);
+            _logger.LogInformation("{ComponentsCount} component(s) started", _config.Components.Count);
 
             await Task.WhenAny(tasks);
 

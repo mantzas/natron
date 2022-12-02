@@ -62,7 +62,7 @@ public class Component : IComponent
         foreach (var route in _config.Routes)
             if (route.Trace)
             {
-                _logger.LogInformation("Adding traced route {0} {1}", route.Verb, route.Template);
+                _logger.LogInformation("Adding traced route {RouteVerb} {RouteTemplate}", route.Verb, route.Template);
                 routerBuilder.MapMiddlewareVerb(route.Verb, route.Template, action =>
                     {
                         action.UseMiddleware<ObservabilityMiddleware>();
@@ -72,7 +72,7 @@ public class Component : IComponent
             }
             else
             {
-                _logger.LogInformation("Adding route {0} {1}", route.Verb, route.Template);
+                _logger.LogInformation("Adding route {RouteVerb} {RouteTemplate}", route.Verb, route.Template);
                 routerBuilder.MapVerb(route.Verb, route.Template, route.Handler);
             }
 

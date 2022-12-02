@@ -67,7 +67,7 @@ public class Message
     public Task NackAsync()
     {
         MessageCount(MessageStatusNack);
-        _logger.LogDebug("Message {MessageId} nacked", Raw.MessageId);
+        _logger.LogDebug("Message {MessageId} not acked", Raw.MessageId);
         return Task.FromResult(0);
     }
 

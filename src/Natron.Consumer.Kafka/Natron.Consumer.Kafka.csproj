@@ -7,13 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.SQS" Version="3.7.100.27" />
-      <PackageReference Include="prometheus-net" Version="7.0.0" />
-      <PackageReference Include="validdotnet" Version="0.2.24" />
+      <ProjectReference Include="..\Natron\Natron.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Natron\Natron.csproj" />
+      <PackageReference Include="Confluent.Kafka" Version="1.9.3" />
+      <PackageReference Include="validdotnet" Version="0.2.24" />
     </ItemGroup>
 
 </Project>

@@ -31,15 +31,15 @@ public class ConsumerTests
             ClientId = "test_client",
             GroupId = "Group1",
             IsolationLevel = IsolationLevel.ReadCommitted,
-            
+            AutoOffsetReset = AutoOffsetReset.Earliest
         };
         var topics = new List<string> { topic };
 
-        Message<string, string> expectedMessage = null;
+        Message<string, string>? expectedMessage = null;
 
-        Task ProcessFunc(Message<string, string> message)
+        Task ProcessFunc(Message<string, string> msg)
         {
-            expectedMessage = message;
+            expectedMessage = msg;
             cts.Cancel();
             return Task.FromResult(0);
         }
@@ -48,8 +48,8 @@ public class ConsumerTests
         await consumer.RunAsync(cts.Token);
 
         expectedMessage.Should().NotBeNull();
-        expectedMessage.Key.Should().Be(message.Key);
-        expectedMessage.Value.Should().Be(message.Value);
+        expectedMessage?.Key.Should().Be(message.Key);
+        expectedMessage?.Value.Should().Be(message.Value);
     }
 
     private static async Task ProduceMessageAsync(string topic, Message<string, string> message,

@@ -8,7 +8,6 @@ public class Consumer<TKey, TValue> : IComponent
 {
     private readonly ConsumerConfig _consumerConfig;
     private readonly ILogger _logger;
-    private readonly ILoggerFactory _loggerFactory;
     private readonly Func<Message<TKey, TValue>, Task> _processFunc;
     private readonly List<string> _topics;
 
@@ -18,7 +17,6 @@ public class Consumer<TKey, TValue> : IComponent
         _processFunc = processFunc.ThrowIfNull(nameof(processFunc));
         _consumerConfig = consumerConfig.ThrowIfNull(nameof(consumerConfig));
         _topics = topics.ThrowIfNull(nameof(topics));
-        _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
         _logger = loggerFactory.CreateLogger<Consumer<TKey, TValue>>();
     }
 

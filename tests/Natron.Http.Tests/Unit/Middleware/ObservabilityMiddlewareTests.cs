@@ -1,10 +1,7 @@
-using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Natron.Http.Middleware;
-using Xunit;
 
-namespace Natron.Tests.Unit.Http.Middleware;
+namespace Natron.Http.Tests.Unit.Middleware;
 
 [Trait("Category", "Unit")]
 public class ObservabilityMiddlewareTests

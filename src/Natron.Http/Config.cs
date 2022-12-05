@@ -3,9 +3,9 @@ using ValidDotNet;
 
 namespace Natron.Http;
 
-public sealed class HttpConfig
+public sealed class Config
 {
-    public HttpConfig()
+    public Config()
     {
         HealthChecks = new List<HealthCheck> { HealthCheck.Default() };
         Routes = new List<Route>();

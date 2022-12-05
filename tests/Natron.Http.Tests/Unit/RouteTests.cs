@@ -1,9 +1,4 @@
-using System;
-using FluentAssertions;
-using Natron.Http;
-using Xunit;
-
-namespace Natron.Tests.Unit.Http;
+namespace Natron.Http.Tests.Unit;
 
 [Trait("Category", "Unit")]
 public class RouteTests

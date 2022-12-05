@@ -1,13 +1,7 @@
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Natron.Http;
-using NSubstitute;
-using Xunit;
 
-namespace Natron.Tests.Unit.Http;
+namespace Natron.Http.Tests.Unit;
 
 public class ComponentTests
 {
@@ -16,7 +10,7 @@ public class ComponentTests
     {
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var cts = new CancellationTokenSource();
-        var config = new HttpConfig();
+        var config = new Config();
         config.Routes.Add(Route.TracedGet("/test", context => context.Response.WriteAsync("test", cts.Token)));
         config.Routes.Add(new Route("GET", "/test", context => context.Response.WriteAsync("test", cts.Token), false));
         var cmp = new Component(loggerFactory, config);

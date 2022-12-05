@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Natron.AWS\Natron.AWS.csproj" />
+      <ProjectReference Include="..\Natron.Http\Natron.Http.csproj" />
       <ProjectReference Include="..\Natron.Kafka\Natron.Kafka.csproj" />
       <ProjectReference Include="..\Natron\Natron.csproj" />
     </ItemGroup>

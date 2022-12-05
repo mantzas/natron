@@ -11,11 +11,11 @@ namespace Natron.Http;
 
 public class Component : IComponent
 {
-    private readonly HttpConfig _config;
+    private readonly Config _config;
     private readonly ILogger _logger;
     private readonly ILoggerFactory _loggerFactory;
 
-    public Component(ILoggerFactory loggerFactory, HttpConfig config)
+    public Component(ILoggerFactory loggerFactory, Config config)
     {
         _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
         _config = config.ThrowIfNull(nameof(config));

@@ -1,11 +1,7 @@
-using System;
-using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Natron.Http.Health;
-using NSubstitute;
-using Xunit;
 
-namespace Natron.Tests.Unit.Http.Health;
+namespace Natron.Http.Tests.Unit.Health;
 
 [Trait("Category", "Unit")]
 public class HealthCheckTests

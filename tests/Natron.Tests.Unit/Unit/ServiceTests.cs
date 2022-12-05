@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
-namespace Natron.Tests.Unit;
+namespace Natron.Tests.Unit.Unit;
 
 [Trait("Category", "Unit")]
 public class ServiceTests

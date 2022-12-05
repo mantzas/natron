@@ -9,7 +9,7 @@ using Natron.Http;
 using Natron.Kafka.Consumer;
 using Natron.Kafka.Producer;
 using Serilog;
-using Config = Natron.AWS.Consumer.Config;
+using Config = Natron.Http.Config;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 
@@ -32,7 +32,7 @@ await ServiceBuilder.Create("example", loggerFactory, cts)
 
 IComponent CreateHttpComponent()
 {
-    var config = new HttpConfig();
+    var config = new Config();
     return new Component(loggerFactory, config);
 }
 
@@ -54,7 +54,7 @@ async Task<IComponent> CreateSqsConsumerAsync()
         return Task.FromResult(0);
     }
 
-    var config = new Config(queueResponse.QueueUrl, ProcessFunc);
+    var config = new Natron.AWS.Consumer.Config(queueResponse.QueueUrl, ProcessFunc);
 
 
     return new Consumer(loggerFactory, client, config);
@@ -90,9 +90,9 @@ async Task<IComponent> CreateKafkaConsumer()
     };
 
 
-    Task ProcessFuncAsync(Message<string, string> message)
+    Task ProcessFuncAsync(Message<string, string> msg)
     {
-        logger?.LogInformation("Kafka message received");
+        logger.LogInformation("Kafka message received");
         return Task.FromResult(0);
     }
 

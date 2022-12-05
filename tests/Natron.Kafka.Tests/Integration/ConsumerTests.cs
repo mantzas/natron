@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 using Natron.Kafka.Consumer;
+using Natron.Kafka.Producer;
 
 namespace Natron.Kafka.Tests.Integration;
 
@@ -11,6 +12,7 @@ public class ConsumerTests
     public async Task TestConsumer()
     {
         var cts = new CancellationTokenSource();
+        var loggerFactory = Substitute.For<ILoggerFactory>();
 
         const string topic = "test-topic";
 
@@ -20,9 +22,8 @@ public class ConsumerTests
             Value = "Value"
         };
 
-        await ProduceMessageAsync(topic, message, cts.Token);
+        await ProduceMessageAsync(loggerFactory, topic, message, cts.Token);
 
-        var lf = Substitute.For<ILoggerFactory>();
 
         var consumerConfig = new ConsumerConfig
         {
@@ -43,7 +44,7 @@ public class ConsumerTests
             return Task.FromResult(0);
         }
 
-        var consumer = new Consumer<string, string>(lf, consumerConfig, topics, ProcessFunc);
+        var consumer = new Consumer<string, string>(loggerFactory, consumerConfig, topics, ProcessFunc);
         await consumer.RunAsync(cts.Token);
 
         expectedMessage.Should().NotBeNull();
@@ -51,7 +52,7 @@ public class ConsumerTests
         expectedMessage?.Value.Should().Be(message.Value);
     }
 
-    private static async Task ProduceMessageAsync(string topic, Message<string, string> message,
+    private static async Task ProduceMessageAsync(ILoggerFactory lf, string topic, Message<string, string> message,
         CancellationToken cancellationToken)
     {
         var producerConfig = new ProducerConfig
@@ -60,7 +61,7 @@ public class ConsumerTests
             ClientId = "test_producer_client"
         };
 
-        using var producer = new ProducerBuilder<string, string>(producerConfig).Build();
+        using var producer = new Producer<string, string>(lf, producerConfig);
 
         var result = await producer.ProduceAsync(topic, message, cancellationToken);
         result.Status.Should().Be(PersistenceStatus.Persisted);

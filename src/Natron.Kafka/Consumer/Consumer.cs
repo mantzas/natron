@@ -2,16 +2,16 @@
 using Microsoft.Extensions.Logging;
 using ValidDotNet;
 
-namespace Natron.Consumer.Kafka;
+namespace Natron.Kafka.Consumer;
 
 public class Consumer<TKey, TValue> : IComponent
 {
     private readonly ConsumerConfig _consumerConfig;
     private readonly ILogger _logger;
     private readonly Func<Message<TKey, TValue>, Task> _processFunc;
-    private readonly List<string> _topics;
+    private readonly IEnumerable<string> _topics;
 
-    public Consumer(ILoggerFactory loggerFactory, ConsumerConfig consumerConfig, List<string> topics,
+    public Consumer(ILoggerFactory loggerFactory, ConsumerConfig consumerConfig, IEnumerable<string> topics,
         Func<Message<TKey, TValue>, Task> processFunc)
     {
         _processFunc = processFunc.ThrowIfNull(nameof(processFunc));

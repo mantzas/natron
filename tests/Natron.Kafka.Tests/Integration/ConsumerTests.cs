@@ -1,9 +1,10 @@
 using Confluent.Kafka;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Natron.Kafka.Consumer;
 using NSubstitute;
 
-namespace Natron.Consumer.Kafka.Tests.Integration;
+namespace Natron.Kafka.Tests.Integration;
 
 [Trait("Category", "Integration")]
 public class ConsumerTests

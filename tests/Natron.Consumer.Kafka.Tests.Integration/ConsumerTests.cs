@@ -61,8 +61,7 @@ public class ConsumerTests
             ClientId = "test_producer_client"
         };
 
-        using var producer = new ProducerBuilder<string, string>(
-            producerConfig.AsEnumerable()).Build();
+        using var producer = new ProducerBuilder<string, string>(producerConfig).Build();
 
         var result = await producer.ProduceAsync(topic, message, cancellationToken);
         result.Status.Should().Be(PersistenceStatus.Persisted);

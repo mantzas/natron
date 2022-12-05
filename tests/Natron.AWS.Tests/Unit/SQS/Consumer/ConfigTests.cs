@@ -1,6 +1,6 @@
-using FluentAssertions;
+using Natron.AWS.Consumer;
 
-namespace Natron.Consumer.AWS.SQS.Tests.Unit;
+namespace Natron.AWS.Tests.Unit.SQS.Consumer;
 
 [Trait("Category", "Unit")]
 public class ConfigTests

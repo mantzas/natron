@@ -1,11 +1,11 @@
 using System.Net;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
+using Natron.AWS.Consumer;
+using Message = Amazon.SQS.Model.Message;
 
-namespace Natron.Consumer.AWS.SQS.Tests.Unit;
+namespace Natron.AWS.Tests.Unit.SQS.Consumer;
 
 [Trait("Category", "Unit")]
 public class ConsumerTests
@@ -17,7 +17,7 @@ public class ConsumerTests
         var cts = new CancellationTokenSource();
         var lf = Substitute.For<ILoggerFactory>();
 
-        var rawMessages = new List<Amazon.SQS.Model.Message>
+        var rawMessages = new List<Message>
         {
             new() { MessageId = "1" },
             new() { MessageId = "2" }
@@ -56,7 +56,7 @@ public class ConsumerTests
 
         var config = new Config(queueUrl, ProcessFunc);
 
-        var consumer = new Consumer(lf, client, config);
+        var consumer = new AWS.Consumer.Consumer(lf, client, config);
 
         await consumer.RunAsync(cts.Token);
 

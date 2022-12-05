@@ -1,9 +1,9 @@
 using Amazon.SQS;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
+using Natron.AWS.Consumer;
+using Message = Amazon.SQS.Model.Message;
 
-namespace Natron.Consumer.AWS.SQS.Tests.Unit;
+namespace Natron.AWS.Tests.Unit.SQS.Consumer;
 
 [Trait("Category", "Unit")]
 public class BatchTests
@@ -16,12 +16,12 @@ public class BatchTests
         var lf = Substitute.For<ILoggerFactory>();
         var client = Substitute.For<IAmazonSQS>();
 
-        var rawMessages = new List<Amazon.SQS.Model.Message>
+        var rawMessages = new List<Message>
         {
             new() { MessageId = "1" },
             new() { MessageId = "2" }
         };
-        var expectedMessages = new List<Message>
+        var expectedMessages = new List<AWS.Consumer.Message>
         {
             new(lf, cts.Token, client, queueUrl, rawMessages[0]),
             new(lf, cts.Token, client, queueUrl, rawMessages[1])

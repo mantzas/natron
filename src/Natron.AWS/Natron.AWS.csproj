@@ -8,8 +8,13 @@
 
     <ItemGroup>
       <PackageReference Include="AWSSDK.SQS" Version="3.7.100.28" />
-      <PackageReference Include="prometheus-net" Version="7.0.0" />
       <PackageReference Include="validdotnet" Version="0.2.24" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+        <HintPath>..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\7.0.0\ref\net7.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
     <ItemGroup>

@@ -1,6 +1,6 @@
 using ValidDotNet;
 
-namespace Natron.Consumer.AWS.SQS;
+namespace Natron.AWS.Consumer;
 
 public sealed class Config
 {

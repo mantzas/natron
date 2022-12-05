@@ -3,16 +3,12 @@ using Amazon.SQS;
 using Amazon.SQS.Model;
 using Amazon.SQS.Util;
 using Microsoft.Extensions.Logging;
-using Prometheus;
 using ValidDotNet;
 
-namespace Natron.Consumer.AWS.SQS;
+namespace Natron.AWS.Consumer;
 
 public class Consumer : IComponent
 {
-    private static readonly Gauge QueueSizeGauge = Metrics
-        .CreateGauge("consumer_sqs_queue_size", "Queue size.", "queue", "state");
-
     private readonly IAmazonSQS _client;
 
     private readonly Config _config;
@@ -89,12 +85,6 @@ public class Consumer : IComponent
                 // TODO: check this out
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
-                    QueueSizeGauge.WithLabels(_config.QueueUrl, "available")
-                        .Set(response.ApproximateNumberOfMessages);
-                    QueueSizeGauge.WithLabels(_config.QueueUrl, "delayed")
-                        .Set(response.ApproximateNumberOfMessagesDelayed);
-                    QueueSizeGauge.WithLabels(_config.QueueUrl, "invisible")
-                        .Set(response.ApproximateNumberOfMessagesNotVisible);
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(_config.StatsInterval), cancelToken);

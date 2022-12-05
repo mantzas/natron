@@ -1,8 +1,6 @@
 using Confluent.Kafka;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Natron.Kafka.Consumer;
-using NSubstitute;
 
 namespace Natron.Kafka.Tests.Integration;
 

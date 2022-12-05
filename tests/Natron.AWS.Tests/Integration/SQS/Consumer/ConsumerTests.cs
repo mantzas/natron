@@ -2,11 +2,10 @@ using System.Net;
 using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
+using Natron.AWS.Consumer;
 
-namespace Natron.Consumer.AWS.SQS.Tests.Integration;
+namespace Natron.AWS.Tests.Integration.SQS.Consumer;
 
 [Trait("Category", "Integration")]
 public class ConsumerTests
@@ -35,7 +34,7 @@ public class ConsumerTests
         }
 
         var config = new Config(queueUrl, ProcessFunc, waitTimeSeconds: 1, visibilityTimeout: 1, statsInterval: 1);
-        var consumer = new Consumer(lf, client, config);
+        var consumer = new AWS.Consumer.Consumer(lf, client, config);
         await consumer.RunAsync(cts.Token);
 
         await Task.Delay(TimeSpan.FromSeconds(2), CancellationToken.None);

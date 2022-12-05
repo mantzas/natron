@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natron.Tests.Unit", "tests\Natron.Tests.Unit\Natron.Tests.Unit.csproj", "{BEE9C5FE-7997-4D20-9C3E-2122E43671EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natron.Tests", "tests\Natron.Tests\Natron.Tests.csproj", "{BEE9C5FE-7997-4D20-9C3E-2122E43671EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natron", "src\Natron\Natron.csproj", "{40FC07D5-C375-418F-90FC-581E92CD3033}"
 EndProject

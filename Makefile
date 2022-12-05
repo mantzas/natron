@@ -8,6 +8,9 @@ test:
 testint: 
 	dotnet test --filter Category=Integration
 
+testall: 
+	dotnet test
+
 deps-start:
 	docker-compose up -d
 
@@ -19,4 +22,4 @@ deps-stop:
 # under parallel conditions.
 .NOTPARALLEL:
 
-.PHONY: default test deps-start deps-stop
+.PHONY: default test testint testall deps-start deps-stop

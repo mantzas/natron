@@ -2,7 +2,7 @@ using Amazon.SQS;
 using Microsoft.Extensions.Logging;
 using ValidDotNet;
 
-namespace Natron.Consumer.AWS.SQS;
+namespace Natron.AWS.Consumer;
 
 public class Batch
 {

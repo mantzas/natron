@@ -1,11 +1,9 @@
 using System.Net;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
 
-namespace Natron.Consumer.AWS.SQS.Tests.Unit;
+namespace Natron.AWS.Tests.Unit.SQS.Consumer;
 
 [Trait("Category", "Unit")]
 public class MessageTests
@@ -14,7 +12,7 @@ public class MessageTests
     public async Task TestMessageAck()
     {
         const string queueUrl = "URL";
-        var rawMessage = new Amazon.SQS.Model.Message();
+        var rawMessage = new Message();
         var cts = new CancellationTokenSource();
 
         var lf = Substitute.For<ILoggerFactory>();
@@ -22,7 +20,7 @@ public class MessageTests
         client.DeleteMessageAsync(Arg.Any<DeleteMessageRequest>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(new DeleteMessageResponse { HttpStatusCode = HttpStatusCode.OK }));
 
-        var msg = new Message(lf, cts.Token, client, queueUrl, rawMessage);
+        var msg = new Natron.AWS.Consumer.Message(lf, cts.Token, client, queueUrl, rawMessage);
 
         msg.Raw.Should().Be(rawMessage);
 
@@ -35,7 +33,7 @@ public class MessageTests
     public async Task TestMessageAckFailure()
     {
         const string queueUrl = "URL";
-        var rawMessage = new Amazon.SQS.Model.Message();
+        var rawMessage = new Message();
         var cts = new CancellationTokenSource();
 
         var lf = Substitute.For<ILoggerFactory>();
@@ -43,7 +41,7 @@ public class MessageTests
         client.DeleteMessageAsync(Arg.Any<DeleteMessageRequest>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(new DeleteMessageResponse { HttpStatusCode = HttpStatusCode.ServiceUnavailable }));
 
-        var msg = new Message(lf, cts.Token, client, queueUrl, rawMessage);
+        var msg = new Natron.AWS.Consumer.Message(lf, cts.Token, client, queueUrl, rawMessage);
 
         msg.Raw.Should().Be(rawMessage);
 
@@ -56,12 +54,12 @@ public class MessageTests
     public async Task TestMessageNack()
     {
         const string queueUrl = "URL";
-        var rawMessage = new Amazon.SQS.Model.Message();
+        var rawMessage = new Message();
         var cts = new CancellationTokenSource();
 
         var lf = Substitute.For<ILoggerFactory>();
         var client = Substitute.For<IAmazonSQS>();
-        var msg = new Message(lf, cts.Token, client, queueUrl, rawMessage);
+        var msg = new Natron.AWS.Consumer.Message(lf, cts.Token, client, queueUrl, rawMessage);
 
         msg.Raw.Should().Be(rawMessage);
 

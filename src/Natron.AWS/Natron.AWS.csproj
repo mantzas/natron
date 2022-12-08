@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.SQS" Version="3.7.100.30" />
+      <PackageReference Include="AWSSDK.SQS" Version="3.7.100.31" />
       <PackageReference Include="validdotnet" Version="0.2.24" />
     </ItemGroup>
 

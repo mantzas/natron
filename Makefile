@@ -5,10 +5,10 @@ default: test
 test: 
 	dotnet test --filter Category=Unit
 
-testint: 
+testint: deps-start
 	dotnet test --filter Category=Integration
 
-testall: 
+testall: deps-start 
 	dotnet test
 
 deps-start:

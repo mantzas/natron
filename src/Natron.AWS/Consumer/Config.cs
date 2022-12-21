@@ -8,12 +8,12 @@ public sealed class Config
         int waitTimeSeconds = 10,
         int maxNumberOfMessages = 20, int statsInterval = 10)
     {
-        QueueUrl = queueUrl.ThrowIfNullOrWhitespace(nameof(queueUrl));
-        ProcessFunc = processFunc.ThrowIfNull(nameof(processFunc));
-        MaxNumberOfMessages = maxNumberOfMessages.ThrowIfLessOrEqual(nameof(maxNumberOfMessages), 0);
-        WaitTimeSeconds = waitTimeSeconds.ThrowIfLessOrEqual(nameof(waitTimeSeconds), 0);
-        VisibilityTimeout = visibilityTimeout.ThrowIfLessOrEqual(nameof(visibilityTimeout), 0);
-        StatsInterval = statsInterval.ThrowIfLessOrEqual(nameof(statsInterval), 0);
+        QueueUrl = queueUrl.ThrowIfNullOrWhitespace();
+        ProcessFunc = processFunc.ThrowIfNull();
+        MaxNumberOfMessages = maxNumberOfMessages.ThrowIfLessOrEqual(0);
+        WaitTimeSeconds = waitTimeSeconds.ThrowIfLessOrEqual(0);
+        VisibilityTimeout = visibilityTimeout.ThrowIfLessOrEqual(0);
+        StatsInterval = statsInterval.ThrowIfLessOrEqual(0);
     }
 
     public int VisibilityTimeout { get; }

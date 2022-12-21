@@ -7,8 +7,8 @@ public class HealthCheck
 {
     public HealthCheck(string name, IHealthCheck instance)
     {
-        Name = name.ThrowIfNullOrWhitespace(nameof(name));
-        Instance = instance.ThrowIfNull(nameof(instance));
+        Name = name.ThrowIfNullOrWhitespace();
+        Instance = instance.ThrowIfNull();
     }
 
     public string Name { get; }

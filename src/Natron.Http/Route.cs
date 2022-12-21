@@ -5,18 +5,18 @@ namespace Natron.Http;
 
 public sealed class Route
 {
+    public Route(string verb, string template, RequestDelegate handler, bool trace)
+    {
+        Verb = verb.ThrowIfNullOrWhitespace();
+        Template = template.ThrowIfNullOrWhitespace();
+        Handler = handler.ThrowIfNull();
+        Trace = trace;
+    }
+
     public string Verb { get; }
     public string Template { get; }
     public RequestDelegate Handler { get; }
     public bool Trace { get; }
-
-    public Route(string verb, string template, RequestDelegate handler, bool trace)
-    {
-        Verb = verb.ThrowIfNullOrWhitespace(nameof(verb));
-        Template = template.ThrowIfNullOrWhitespace(nameof(template));
-        Handler = handler.ThrowIfNull(nameof(handler));
-        Trace = trace;
-    }
 
     public static Route TracedGet(string template, RequestDelegate handler)
     {

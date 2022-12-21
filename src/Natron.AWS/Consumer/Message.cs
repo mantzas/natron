@@ -16,11 +16,11 @@ public class Message
     public Message(ILoggerFactory loggerFactory, CancellationToken cancellationToken, IAmazonSQS client,
         string queueUrl, Amazon.SQS.Model.Message message)
     {
-        _logger = loggerFactory.ThrowIfNull(nameof(loggerFactory)).CreateLogger<Consumer>();
-        _queueUrl = queueUrl.ThrowIfNullOrWhitespace(nameof(queueUrl));
-        _cancellationToken = cancellationToken.ThrowIfNone(nameof(cancellationToken));
-        _client = client.ThrowIfNull(nameof(client));
-        Raw = message.ThrowIfNull(nameof(message));
+        _logger = loggerFactory.ThrowIfNull().CreateLogger<Consumer>();
+        _queueUrl = queueUrl.ThrowIfNullOrWhitespace();
+        _cancellationToken = cancellationToken.ThrowIfNone();
+        _client = client.ThrowIfNull();
+        Raw = message.ThrowIfNull();
     }
 
     public Amazon.SQS.Model.Message Raw { get; }

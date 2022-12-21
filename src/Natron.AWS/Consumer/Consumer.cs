@@ -17,9 +17,9 @@ public class Consumer : IComponent
 
     public Consumer(ILoggerFactory loggerFactory, IAmazonSQS client, Config config)
     {
-        _client = client.ThrowIfNull(nameof(client));
-        _config = config.ThrowIfNull(nameof(config));
-        _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
+        _client = client.ThrowIfNull();
+        _config = config.ThrowIfNull();
+        _loggerFactory = loggerFactory.ThrowIfNull();
         _logger = _loggerFactory.CreateLogger<Consumer>();
     }
 

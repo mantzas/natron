@@ -8,7 +8,7 @@ public class Batch
 {
     private Batch(List<Message> messages)
     {
-        Messages = messages.ThrowIfNull(nameof(messages));
+        Messages = messages.ThrowIfNull();
     }
 
     public List<Message> Messages { get; }

@@ -7,10 +7,10 @@ public sealed class ServiceConfig
 {
     public ServiceConfig(string name, ILoggerFactory loggerFactory, CancellationTokenSource cts)
     {
-        Name = name.ThrowIfNullOrWhitespace(nameof(name));
-        LoggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
+        Name = name.ThrowIfNullOrWhitespace();
+        LoggerFactory = loggerFactory.ThrowIfNull();
         Components = new List<IComponent>();
-        CancellationTokenSource = cts.ThrowIfNull(nameof(cts));
+        CancellationTokenSource = cts.ThrowIfNull();
     }
 
     public string Name { get; }
@@ -20,6 +20,6 @@ public sealed class ServiceConfig
 
     public void UseComponents(params IComponent[] components)
     {
-        Components.AddRange(components.ThrowIfNullOrEmpty(nameof(components)));
+        Components.AddRange(components.ThrowIfNullOrEmpty());
     }
 }

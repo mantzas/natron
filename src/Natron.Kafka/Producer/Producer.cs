@@ -11,7 +11,7 @@ public class Producer<TKey, TValue> : IDisposable
 
     public Producer(ILoggerFactory loggerFactory, ProducerConfig producerConfig)
     {
-        _logger = loggerFactory.ThrowIfNull(nameof(loggerFactory)).CreateLogger<Producer<TKey, TValue>>();
+        _logger = loggerFactory.ThrowIfNull().CreateLogger<Producer<TKey, TValue>>();
         _producer = new ProducerBuilder<TKey, TValue>(producerConfig).Build();
     }
 

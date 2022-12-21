@@ -20,6 +20,6 @@ public sealed class Config
 
     public void UseHealthChecks(params HealthCheck[] healthChecks)
     {
-        HealthChecks = healthChecks.ThrowIfNull(nameof(healthChecks)).ToList();
+        HealthChecks = healthChecks.ThrowIfNull().ToList();
     }
 }

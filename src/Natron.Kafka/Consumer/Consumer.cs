@@ -14,9 +14,9 @@ public class Consumer<TKey, TValue> : IComponent
     public Consumer(ILoggerFactory loggerFactory, ConsumerConfig consumerConfig, IEnumerable<string> topics,
         Func<Message<TKey, TValue>, Task> processFunc)
     {
-        _processFunc = processFunc.ThrowIfNull(nameof(processFunc));
-        _consumerConfig = consumerConfig.ThrowIfNull(nameof(consumerConfig));
-        _topics = topics.ThrowIfNull(nameof(topics));
+        _processFunc = processFunc.ThrowIfNull();
+        _consumerConfig = consumerConfig.ThrowIfNull();
+        _topics = topics.ThrowIfNull();
         _logger = loggerFactory.CreateLogger<Consumer<TKey, TValue>>();
     }
 

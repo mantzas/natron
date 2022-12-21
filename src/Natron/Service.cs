@@ -11,7 +11,7 @@ public sealed class Service : IService
 
     internal Service(ServiceConfig config)
     {
-        _config = config.ThrowIfNull(nameof(config));
+        _config = config.ThrowIfNull();
         _logger = config.LoggerFactory.CreateLogger<Service>();
         SetupCancelKeyPress();
     }

@@ -17,8 +17,8 @@ public class Component : IComponent
 
     public Component(ILoggerFactory loggerFactory, Config config)
     {
-        _loggerFactory = loggerFactory.ThrowIfNull(nameof(loggerFactory));
-        _config = config.ThrowIfNull(nameof(config));
+        _loggerFactory = loggerFactory.ThrowIfNull();
+        _config = config.ThrowIfNull();
         _logger = loggerFactory.CreateLogger<Component>();
     }
 

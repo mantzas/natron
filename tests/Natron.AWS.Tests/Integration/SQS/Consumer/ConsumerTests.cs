@@ -30,10 +30,11 @@ public class ConsumerTests
                     await message.AckAsync();
 
             counter++;
-            if (counter == 3) cts.Cancel();
+            if (counter == 3) await cts.CancelAsync();
         }
 
-        var config = new Config(queueUrl, ProcessFunc, waitTimeSeconds: 1, visibilityTimeout: 1, statsInterval: 1);
+        var config = new Config(queueUrl, ProcessFunc, waitTimeSeconds: 1, visibilityTimeout: 1, statsInterval: 1,
+            maxNumberOfMessages: 10);
         var consumer = new AWS.Consumer.Consumer(lf, client, config);
         await consumer.RunAsync(cts.Token);
 
@@ -61,7 +62,7 @@ public class ConsumerTests
     {
         var client = new AmazonSQSClient(new AnonymousAWSCredentials(), new AmazonSQSConfig
         {
-            ServiceURL = "http://localhost:4566"
+            ServiceURL = "http://localhost:4566",
         });
 
         var queueResponse = await client.CreateQueueAsync(new CreateQueueRequest

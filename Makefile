@@ -12,10 +12,10 @@ testall: deps-start
 	dotnet test
 
 deps-start:
-	docker-compose up -d
+	docker compose up -d
 
 deps-stop:
-	docker-compose down
+	docker compose down
 
 # disallow any parallelism (-j) for Make. This is necessary since some
 # commands during the build process create temporary files that collide

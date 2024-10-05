@@ -10,11 +10,6 @@ public class ConfigTests
     {
         const string url = "URL";
 
-        Task Fn(Batch _)
-        {
-            return Task.FromResult(0);
-        }
-
         var cfg = new Config(url, Fn);
         cfg.QueueUrl.Should().Be(url);
         cfg.ProcessFunc.Should().Be((Func<Batch, Task>)Fn);
@@ -22,5 +17,11 @@ public class ConfigTests
         cfg.WaitTimeSeconds.Should().Be(10);
         cfg.MaxNumberOfMessages.Should().Be(20);
         cfg.StatsInterval.Should().Be(10);
+        return;
+
+        Task Fn(Batch _)
+        {
+            return Task.FromResult(0);
+        }
     }
 }

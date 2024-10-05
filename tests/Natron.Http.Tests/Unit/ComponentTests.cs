@@ -16,8 +16,8 @@ public class ComponentTests
         var cmp = new Component(loggerFactory, config);
         var t = cmp.RunAsync(cts.Token);
         await Task.Delay(10, cts.Token);
-        cts.Cancel();
-        await Task.WhenAll(t);
+        await cts.CancelAsync();
+        await t;
         t.Status.Should().Be(TaskStatus.RanToCompletion);
     }
 }

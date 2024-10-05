@@ -37,19 +37,20 @@ public class ConsumerTests
 
         Message<string, string>? expectedMessage = null;
 
-        Task ProcessFunc(Message<string, string> msg)
-        {
-            expectedMessage = msg;
-            cts.Cancel();
-            return Task.FromResult(0);
-        }
-
         var consumer = new Consumer<string, string>(loggerFactory, consumerConfig, topics, ProcessFunc);
         await consumer.RunAsync(cts.Token);
 
         expectedMessage.Should().NotBeNull();
         expectedMessage?.Key.Should().Be(message.Key);
         expectedMessage?.Value.Should().Be(message.Value);
+        return;
+
+        Task ProcessFunc(Message<string, string> msg)
+        {
+            expectedMessage = msg;
+            cts.Cancel();
+            return Task.FromResult(0);
+        }
     }
 
     private static async Task ProduceMessageAsync(ILoggerFactory lf, string topic, Message<string, string> message,

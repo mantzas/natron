@@ -46,8 +46,8 @@ public class Consumer : IComponent
     {
         var request = new ReceiveMessageRequest
         {
-            MessageAttributeNames = new List<string> { SQSConstants.ATTRIBUTE_ALL },
-            AttributeNames = new List<string> { SQSConstants.ATTRIBUTE_CREATED_TIMESTAMP },
+            MessageAttributeNames = [SQSConstants.ATTRIBUTE_ALL],
+            MessageSystemAttributeNames = [SQSConstants.ATTRIBUTE_CREATED_TIMESTAMP],
             QueueUrl = _config.QueueUrl,
             MaxNumberOfMessages = _config.MaxNumberOfMessages,
             VisibilityTimeout = _config.VisibilityTimeout,
@@ -61,7 +61,7 @@ public class Consumer : IComponent
 
         _logger.LogError("Failed to receive messages with HTTP status code {ResponseHttpStatusCode}",
             response.HttpStatusCode);
-        return new List<Amazon.SQS.Model.Message>();
+        return [];
     }
 
     private async Task GetStatsAsync(IAmazonSQS client, CancellationToken cancelToken)
@@ -73,12 +73,12 @@ public class Consumer : IComponent
                 var request = new GetQueueAttributesRequest
                 {
                     QueueUrl = _config.QueueUrl,
-                    AttributeNames = new List<string>
-                    {
+                    AttributeNames =
+                    [
                         SQSConstants.ATTRIBUTE_APPROXIMATE_NUMBER_OF_MESSAGES,
                         SQSConstants.ATTRIBUTE_APPROXIMATE_NUMBER_OF_MESSAGES_DELAYED,
                         SQSConstants.ATTRIBUTE_APPROXIMATE_NUMBER_OF_MESSAGES_NOT_VISIBLE
-                    }
+                    ]
                 };
                 var response = await client.GetQueueAttributesAsync(request, cancelToken).ConfigureAwait(false);
 

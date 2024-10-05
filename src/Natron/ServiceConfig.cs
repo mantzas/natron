@@ -9,7 +9,7 @@ public sealed class ServiceConfig
     {
         Name = name.ThrowIfNullOrWhitespace();
         LoggerFactory = loggerFactory.ThrowIfNull();
-        Components = new List<IComponent>();
+        Components = [];
         CancellationTokenSource = cts.ThrowIfNull();
     }
 

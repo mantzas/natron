@@ -47,13 +47,6 @@ public class ConsumerTests
 
         Batch expectedBatch = null!;
 
-        Task ProcessFunc(Batch btc)
-        {
-            expectedBatch = btc;
-            cts.Cancel();
-            return Task.FromResult(0);
-        }
-
         var config = new Config(queueUrl, ProcessFunc);
 
         var consumer = new AWS.Consumer.Consumer(lf, client, config);
@@ -61,5 +54,13 @@ public class ConsumerTests
         await consumer.RunAsync(cts.Token);
 
         expectedBatch.Should().BeEquivalentTo(batch);
+        return;
+
+        Task ProcessFunc(Batch btc)
+        {
+            expectedBatch = btc;
+            cts.Cancel();
+            return Task.FromResult(0);
+        }
     }
 }

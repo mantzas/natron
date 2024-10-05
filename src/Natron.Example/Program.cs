@@ -29,6 +29,7 @@ var kafkaConsumer = await CreateKafkaConsumer();
 await ServiceBuilder.Create("example", loggerFactory, cts)
     .ConfigureComponents(httpComponent, sqsComponent, kafkaConsumer)
     .Build().RunAsync();
+return;
 
 IComponent CreateHttpComponent()
 {
@@ -48,16 +49,16 @@ async Task<IComponent> CreateSqsConsumerAsync()
         QueueName = "example-queue"
     });
 
+    var config = new Natron.AWS.Consumer.Config(queueResponse.QueueUrl, ProcessFunc);
+
+
+    return new Consumer(loggerFactory, client, config);
+
     Task ProcessFunc(Batch batch)
     {
         logger.LogInformation("SQS Batch received");
         return Task.FromResult(0);
     }
-
-    var config = new Natron.AWS.Consumer.Config(queueResponse.QueueUrl, ProcessFunc);
-
-
-    return new Consumer(loggerFactory, client, config);
 }
 
 async Task<IComponent> CreateKafkaConsumer()
@@ -90,11 +91,11 @@ async Task<IComponent> CreateKafkaConsumer()
     };
 
 
+    return new Consumer<string, string>(loggerFactory, config, topics, ProcessFuncAsync);
+
     Task ProcessFuncAsync(Message<string, string> msg)
     {
         logger.LogInformation("Kafka message received");
         return Task.FromResult(0);
     }
-
-    return new Consumer<string, string>(loggerFactory, config, topics, ProcessFuncAsync);
 }

@@ -30,7 +30,7 @@ public class Component : IComponent
 
     private IWebHost CreateWebHost()
     {
-        var webHost = WebHost.CreateDefaultBuilder(Array.Empty<string>())
+        var webHost = WebHost.CreateDefaultBuilder([])
             .Configure(app =>
             {
                 app.UseRouter(BuildRouter(app));

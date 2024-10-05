@@ -15,23 +15,11 @@ public class ConsumerTests
     {
         const string notAcked = "Two";
 
-        var (client, queueUrl) = await CreateClientAndQueueAsync(new[] { "One", notAcked, "Three" });
+        var (client, queueUrl) = await CreateClientAndQueueAsync(["One", notAcked, "Three"]);
 
         var lf = Substitute.For<ILoggerFactory>();
         var cts = new CancellationTokenSource();
         var counter = 0;
-
-        async Task ProcessFunc(Batch batch)
-        {
-            foreach (var message in batch.Messages)
-                if (message.Raw.Body == notAcked)
-                    await message.NackAsync();
-                else
-                    await message.AckAsync();
-
-            counter++;
-            if (counter == 3) await cts.CancelAsync();
-        }
 
         var config = new Config(queueUrl, ProcessFunc, waitTimeSeconds: 1, visibilityTimeout: 1, statsInterval: 1,
             maxNumberOfMessages: 10);
@@ -55,6 +43,19 @@ public class ConsumerTests
         }, CancellationToken.None);
 
         purgeResponse.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+        return;
+
+        async Task ProcessFunc(Batch batch)
+        {
+            foreach (var message in batch.Messages)
+                if (message.Raw.Body == notAcked)
+                    await message.NackAsync();
+                else
+                    await message.AckAsync();
+
+            counter++;
+            if (counter == 3) await cts.CancelAsync();
+        }
     }
 
 
@@ -62,7 +63,7 @@ public class ConsumerTests
     {
         var client = new AmazonSQSClient(new AnonymousAWSCredentials(), new AmazonSQSConfig
         {
-            ServiceURL = "http://localhost:4566",
+            ServiceURL = "http://localhost:4566"
         });
 
         var queueResponse = await client.CreateQueueAsync(new CreateQueueRequest

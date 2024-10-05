@@ -7,9 +7,9 @@ public sealed class Config
 {
     public Config()
     {
-        HealthChecks = new List<HealthCheck> { HealthCheck.Default() };
-        Routes = new List<Route>();
-        Urls = new[] { "http://0.0.0.0:50000", "https://0.0.0.0:50001" };
+        HealthChecks = [HealthCheck.Default()];
+        Routes = [];
+        Urls = ["http://0.0.0.0:50000", "https://0.0.0.0:50001"];
         ShutdownTimeout = TimeSpan.FromSeconds(10);
     }
 

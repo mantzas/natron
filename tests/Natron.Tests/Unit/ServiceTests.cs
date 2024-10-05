@@ -21,8 +21,8 @@ public class ServiceTests
             .Build();
         var t = s.RunAsync();
         await Task.Delay(100, cts.Token);
-        cts.Cancel();
-        await Task.WhenAll(t);
+        await cts.CancelAsync();
+        await t;
         t.Status.Should().Be(TaskStatus.RanToCompletion);
     }
 

@@ -29,6 +29,7 @@ var kafkaConsumer = await CreateKafkaConsumer();
 await ServiceBuilder.Create("example", loggerFactory, cts)
     .ConfigureComponents(httpComponent, sqsComponent, kafkaConsumer)
     .Build().RunAsync();
+
 return;
 
 IComponent CreateHttpComponent()

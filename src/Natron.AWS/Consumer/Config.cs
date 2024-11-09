@@ -6,7 +6,7 @@ public sealed class Config
 {
     public Config(string queueUrl, Func<Batch, Task> processFunc, int visibilityTimeout = 10,
         int waitTimeSeconds = 10,
-        int maxNumberOfMessages = 20, int statsInterval = 10)
+        int maxNumberOfMessages = 10, int statsInterval = 10)
     {
         QueueUrl = queueUrl.ThrowIfNullOrWhitespace();
         ProcessFunc = processFunc.ThrowIfNull();

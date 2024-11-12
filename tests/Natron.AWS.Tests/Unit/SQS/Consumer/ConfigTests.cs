@@ -15,7 +15,7 @@ public class ConfigTests
         cfg.ProcessFunc.Should().Be((Func<Batch, Task>)Fn);
         cfg.VisibilityTimeout.Should().Be(10);
         cfg.WaitTimeSeconds.Should().Be(10);
-        cfg.MaxNumberOfMessages.Should().Be(20);
+        cfg.MaxNumberOfMessages.Should().Be(10);
         cfg.StatsInterval.Should().Be(10);
         return;
 

@@ -9,9 +9,12 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
   # Maintain dependencies for dotnet
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+    allow:
+      - dependency-name: "FluentAssertions"
+        versions: ["7.x"]

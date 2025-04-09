@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Diagnostics.HEalthChecks" Version="9.0.4" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4" />
       <PackageReference Include="prometheus-net" Version="8.2.1" />
       <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
       <PackageReference Include="validdotnet" Version="0.3.0" />

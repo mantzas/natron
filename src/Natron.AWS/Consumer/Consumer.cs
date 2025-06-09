@@ -33,6 +33,20 @@ public class Consumer : IComponent
         {
             var messages = await GetMessagesAsync(_client, cancelToken);
 
+            if (messages == null)
+            {
+                _logger.LogDebug("Received null messages from SQS");
+                await Task.Delay(TimeSpan.FromSeconds(_config.WaitTimeSeconds), cancelToken);
+                continue;
+            }
+            if (messages.Count == 0)
+            {
+                _logger.LogDebug("No messages received from SQS");
+                await Task.Delay(TimeSpan.FromSeconds(_config.WaitTimeSeconds), cancelToken);
+                continue;
+            }
+            _logger.LogDebug("Received {MessageCount} messages from SQS", messages.Count);
+
             if (messages.Count == 0) continue;
 
             var batch = Batch.From(_loggerFactory, cancelToken, _client, _config.QueueUrl, messages);

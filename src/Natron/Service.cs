@@ -13,13 +13,14 @@ public sealed class Service : IService
     {
         _config = config.ThrowIfNull();
         _logger = config.LoggerFactory.CreateLogger<Service>();
-        SetupCancelKeyPress();
     }
 
     public async Task RunAsync()
     {
         try
         {
+            SetupCancelKeyPress();
+
             _logger.LogInformation("service {ConfigName} started", _config.Name);
 
             var tasks = _config.Components
@@ -43,13 +44,15 @@ public sealed class Service : IService
 
     private void SetupCancelKeyPress()
     {
-        Console.CancelKeyPress += (_, ev) =>
-        {
-            _logger.LogInformation("ctrl+c pressed");
-            _cancelKeyPressed = true;
-            _config.CancellationTokenSource.Cancel();
-            ev.Cancel = true;
-        };
+        Console.CancelKeyPress += OnCancelKeyPress;
+    }
+
+    private void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
+    {
+        _logger.LogInformation("ctrl+c pressed");
+        _cancelKeyPressed = true;
+        _config.CancellationTokenSource.Cancel();
+        e.Cancel = true;
     }
 
     private void GracefulShutdownComponents()
@@ -58,5 +61,10 @@ public sealed class Service : IService
 
         _logger.LogWarning("component returned unexpected. Canceling all components");
         _config.CancellationTokenSource.Cancel();
+    }
+
+    public void Dispose()
+    {
+        Console.CancelKeyPress -= OnCancelKeyPress;
     }
 }

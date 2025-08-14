@@ -22,7 +22,7 @@ public sealed class ServiceBuilder
         return this;
     }
 
-    public IService Build()
+    public Service Build()
     {
         return new Service(_config);
     }

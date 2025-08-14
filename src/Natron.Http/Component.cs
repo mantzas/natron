@@ -31,11 +31,10 @@ public class Component : IComponent
     private IWebHost CreateWebHost()
     {
         var webHost = WebHost.CreateDefaultBuilder([])
-            .Configure(app =>
+                        .Configure(app =>
             {
                 app.UseRouter(BuildRouter(app));
                 app.UseHealthChecks("/health");
-                app.Build();
             })
             //.ConfigureKestrel(options => { options.})
             //.ConfigureLogging(builder => { builder. })

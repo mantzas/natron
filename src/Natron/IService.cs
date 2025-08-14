@@ -1,6 +1,6 @@
 namespace Natron;
 
-public interface IService
+public interface IService : IDisposable
 {
     Task RunAsync();
 }

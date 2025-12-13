@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Natron.Http.Middleware;
 using ValidDotNet;
@@ -25,56 +24,41 @@ public class Component : IComponent
     public Task RunAsync(CancellationToken cancelToken)
     {
         _logger.LogInformation("Http Component started");
-        return CreateWebHost().RunAsync(cancelToken);
+        return CreateHost().RunAsync(cancelToken);
     }
 
-    private IWebHost CreateWebHost()
+    private IHost CreateHost()
     {
-        var webHost = WebHost.CreateDefaultBuilder([])
-                        .Configure(app =>
-            {
-                app.UseRouter(BuildRouter(app));
-                app.UseHealthChecks("/health");
-            })
-            //.ConfigureKestrel(options => { options.})
-            //.ConfigureLogging(builder => { builder. })
-            //.ConfigureAppConfiguration(builder => { })
-            .ConfigureServices(collection =>
-            {
-                foreach (var healthCheck in _config.HealthChecks)
-                    collection.AddHealthChecks().AddCheck(healthCheck.Name, healthCheck.Instance);
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseKestrel();
+        builder.WebHost.UseUrls(_config.Urls);
+        builder.WebHost.UseShutdownTimeout(_config.ShutdownTimeout);
 
-                collection.AddSingleton(_ => _loggerFactory);
-                collection.AddRouting();
-            })
-            .UseUrls(_config.Urls)
-            .UseShutdownTimeout(_config.ShutdownTimeout)
-            .UseKestrel()
-            .Build();
+        builder.Services.AddSingleton(_loggerFactory);
+        builder.Services.AddHealthChecks();
 
-        return webHost;
-    }
+        foreach (var healthCheck in _config.HealthChecks)
+        {
+            builder.Services.AddHealthChecks().AddCheck(healthCheck.Name, healthCheck.Instance);
+        }
 
-    private IRouter BuildRouter(IApplicationBuilder app)
-    {
-        var routerBuilder = new RouteBuilder(app);
+        var app = builder.Build();
+
+        app.MapHealthChecks("/health");
+
         foreach (var route in _config.Routes)
             if (route.Trace)
             {
                 _logger.LogInformation("Adding traced route {RouteVerb} {RouteTemplate}", route.Verb, route.Template);
-                routerBuilder.MapMiddlewareVerb(route.Verb, route.Template, action =>
-                    {
-                        action.UseMiddleware<ObservabilityMiddleware>();
-                        action.Run(route.Handler);
-                    }
-                );
+                var middleware = new ObservabilityMiddleware(route.Handler);
+                app.MapMethods(route.Template, [route.Verb], middleware.InvokeAsync);
             }
             else
             {
                 _logger.LogInformation("Adding route {RouteVerb} {RouteTemplate}", route.Verb, route.Template);
-                routerBuilder.MapVerb(route.Verb, route.Template, route.Handler);
+                app.MapMethods(route.Template, [route.Verb], route.Handler);
             }
 
-        return routerBuilder.Build();
+        return app;
     }
 }

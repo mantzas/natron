@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Prometheus;
 
 namespace Natron.Http.Middleware;
@@ -8,7 +9,7 @@ namespace Natron.Http.Middleware;
 public sealed class ObservabilityMiddleware
 {
     private readonly RequestDelegate _next;
-    private static readonly Histogram OrderValueHistogram = CreateHttpRequestHistogram();
+    private static readonly Histogram HttpRequestDurationHistogram = CreateHttpRequestHistogram();
 
     public ObservabilityMiddleware(RequestDelegate next)
     {
@@ -18,12 +19,21 @@ public sealed class ObservabilityMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var watch = Stopwatch.StartNew();
-        await _next(context);
-        watch.Stop();
-        OrderValueHistogram
-            .WithLabels(context.Response.StatusCode.ToString(CultureInfo.InvariantCulture),
-                context.Request.Method, context.Request.Path)
-            .Observe(watch.Elapsed.TotalSeconds);
+        try
+        {
+            await _next(context);
+        }
+        finally
+        {
+            watch.Stop();
+            
+            var routeTemplate = context.GetEndpoint()?.Metadata.GetMetadata<RouteEndpoint>()?.RoutePattern.RawText ?? "unknown";
+            
+            HttpRequestDurationHistogram
+                .WithLabels(context.Response.StatusCode.ToString(CultureInfo.InvariantCulture),
+                    context.Request.Method, routeTemplate)
+                .Observe(watch.Elapsed.TotalSeconds);
+        }
     }
 
     private static Histogram CreateHttpRequestHistogram()

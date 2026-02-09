@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Amazon.SQS.Util;
@@ -51,7 +51,15 @@ public class Consumer : IComponent
 
             var batch = Batch.From(_loggerFactory, cancelToken, _client, _config.QueueUrl, messages);
 
-            await _config.ProcessFunc(batch);
+            try
+            {
+                await _config.ProcessFunc(batch);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing SQS batch");
+                throw;
+            }
         }
     }
 

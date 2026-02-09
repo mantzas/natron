@@ -5,12 +5,22 @@ namespace Natron.Http;
 
 public sealed class Config
 {
-    public Config()
+    public Config(string[]? urls = null, TimeSpan? shutdownTimeout = null)
     {
         HealthChecks = [HealthCheck.Default()];
         Routes = [];
-        Urls = ["http://0.0.0.0:50000", "https://0.0.0.0:50001"];
-        ShutdownTimeout = TimeSpan.FromSeconds(10);
+        Urls = urls ?? ["http://0.0.0.0:50000", "https://0.0.0.0:50001"];
+        ShutdownTimeout = shutdownTimeout ?? TimeSpan.FromSeconds(10);
+        
+        if (Urls.Length == 0)
+        {
+            throw new ArgumentException("Urls cannot be empty", nameof(urls));
+        }
+        
+        if (ShutdownTimeout <= TimeSpan.Zero)
+        {
+            throw new ArgumentException("ShutdownTimeout must be positive", nameof(shutdownTimeout));
+        }
     }
 
     public List<HealthCheck> HealthChecks { get; private set; }

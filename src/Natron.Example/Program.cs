@@ -36,7 +36,9 @@ return;
 
 IComponent CreateHttpComponent()
 {
-    var config = new Config();
+    var urls = new[] { "http://0.0.0.0:50000", "https://0.0.0.0:50001" };
+    var shutdownTimeout = TimeSpan.FromSeconds(10);
+    var config = new Config(urls, shutdownTimeout);
     return new Component(loggerFactory, config);
 }
 

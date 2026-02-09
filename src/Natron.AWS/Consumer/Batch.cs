@@ -16,6 +16,11 @@ public class Batch
     public static Batch From(ILoggerFactory loggerFactory, CancellationToken cancellationToken, IAmazonSQS client,
         string queueUrl, IEnumerable<Amazon.SQS.Model.Message> rawMessages)
     {
+        loggerFactory.ThrowIfNull();
+        client.ThrowIfNull();
+        queueUrl.ThrowIfNullOrWhitespace();
+        rawMessages.ThrowIfNull();
+        
         var messages = rawMessages.Select(x => new Message(loggerFactory, cancellationToken, client, queueUrl, x))
             .ToList();
 

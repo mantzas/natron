@@ -12,7 +12,7 @@ public sealed class Producer<TKey, TValue> : IDisposable
     public Producer(ILoggerFactory loggerFactory, ProducerConfig producerConfig)
     {
         _logger = loggerFactory.ThrowIfNull().CreateLogger<Producer<TKey, TValue>>();
-        _producer = new ProducerBuilder<TKey, TValue>(producerConfig).Build();
+        _producer = new ProducerBuilder<TKey, TValue>(producerConfig.ThrowIfNull()).Build();
     }
 
     public void Dispose()
@@ -23,6 +23,8 @@ public sealed class Producer<TKey, TValue> : IDisposable
     public Task<DeliveryResult<TKey, TValue>> ProduceAsync(string topic, Message<TKey, TValue> message,
         CancellationToken cancellationToken = new())
     {
+        topic.ThrowIfNullOrWhitespace();
+        message.ThrowIfNull();
         return _producer.ProduceAsync(topic, message, cancellationToken);
     }
 }

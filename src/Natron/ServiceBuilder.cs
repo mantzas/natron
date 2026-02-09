@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using ValidDotNet;
 
 namespace Natron;
 
@@ -8,6 +9,9 @@ public sealed class ServiceBuilder
 
     private ServiceBuilder(string name, ILoggerFactory loggerFactory, CancellationTokenSource cts)
     {
+        name.ThrowIfNullOrWhitespace();
+        loggerFactory.ThrowIfNull();
+        cts.ThrowIfNull();
         _config = new ServiceConfig(name, loggerFactory, cts);
     }
 

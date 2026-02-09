@@ -11,11 +11,25 @@ public sealed class Config
         ProcessingStrategy processingStrategy = ProcessingStrategy.Crash)
     {
         ConsumerConfig = consumerConfig.ThrowIfNull();
-        Topics = topics.ThrowIfNull();
+        var topicsList = topics.ThrowIfNull().ToList();
+        if (topicsList.Count == 0)
+        {
+            throw new ArgumentException("Topics cannot be empty", nameof(topics));
+        }
+        foreach (var topic in topicsList)
+        {
+            topic.ThrowIfNullOrWhitespace();
+        }
+        Topics = topicsList;
+        
+        if (!Enum.IsDefined(typeof(ProcessingStrategy), processingStrategy))
+        {
+            throw new ArgumentException($"Invalid ProcessingStrategy: {processingStrategy}", nameof(processingStrategy));
+        }
         ProcessingStrategy = processingStrategy;
     }
 
     public ConsumerConfig ConsumerConfig { get; }
-    public IEnumerable<string> Topics { get; }
+    public IReadOnlyList<string> Topics { get; }
     public ProcessingStrategy ProcessingStrategy { get; }
 }

@@ -8,11 +8,12 @@ using ValidDotNet;
 
 namespace Natron.Http;
 
-public class Component : IComponent
+public class Component : IComponent, IAsyncDisposable
 {
     private readonly Config _config;
     private readonly ILogger _logger;
     private readonly ILoggerFactory _loggerFactory;
+    private IHost? _host;
 
     public Component(ILoggerFactory loggerFactory, Config config)
     {
@@ -24,7 +25,8 @@ public class Component : IComponent
     public Task RunAsync(CancellationToken cancelToken)
     {
         _logger.LogInformation("Http Component started");
-        return CreateHost().RunAsync(cancelToken);
+        _host = CreateHost();
+        return _host.RunAsync(cancelToken);
     }
 
     private IHost CreateHost()
@@ -60,5 +62,14 @@ public class Component : IComponent
             }
 
         return app;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_host != null)
+        {
+            await _host.StopAsync();
+            _host.Dispose();
+        }
     }
 }

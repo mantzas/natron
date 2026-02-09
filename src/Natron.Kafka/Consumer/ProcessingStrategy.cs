@@ -10,6 +10,8 @@ public enum ProcessingStrategy
 
     /// <summary>
     /// Logs the error and continues processing subsequent messages when message processing fails.
+    /// WARNING: When using auto-commit mode, failed messages will be marked as consumed and lost.
+    /// Consider using manual commit mode if message loss is unacceptable.
     /// </summary>
     LogAndContinue
 }

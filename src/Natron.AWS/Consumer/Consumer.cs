@@ -25,8 +25,8 @@ public class Consumer : IComponent
 
     public async Task RunAsync(CancellationToken cancelToken)
     {
-        _ = Task.Run(() => GetStatsAsync(_client, cancelToken), cancelToken);
-
+        // TODO: Implement queue metrics/stats collection if needed
+        
         while (!cancelToken.IsCancellationRequested)
         {
             var messages = await GetMessagesAsync(_client, cancelToken);
@@ -79,37 +79,5 @@ public class Consumer : IComponent
         _logger.LogError("Failed to receive messages with HTTP status code {ResponseHttpStatusCode}",
             response.HttpStatusCode);
         return [];
-    }
-
-    private async Task GetStatsAsync(IAmazonSQS client, CancellationToken cancelToken)
-    {
-        try
-        {
-            while (!cancelToken.IsCancellationRequested)
-            {
-                var request = new GetQueueAttributesRequest
-                {
-                    QueueUrl = _config.QueueUrl,
-                    AttributeNames =
-                    [
-                        SQSConstants.ATTRIBUTE_APPROXIMATE_NUMBER_OF_MESSAGES,
-                        SQSConstants.ATTRIBUTE_APPROXIMATE_NUMBER_OF_MESSAGES_DELAYED,
-                        SQSConstants.ATTRIBUTE_APPROXIMATE_NUMBER_OF_MESSAGES_NOT_VISIBLE
-                    ]
-                };
-                var response = await client.GetQueueAttributesAsync(request, cancelToken).ConfigureAwait(false);
-
-                // TODO: check this out
-                if (response.HttpStatusCode == HttpStatusCode.OK)
-                {
-                }
-
-                await Task.Delay(TimeSpan.FromSeconds(_config.StatsInterval), cancelToken);
-            }
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Failed to get queue attributes");
-        }
     }
 }

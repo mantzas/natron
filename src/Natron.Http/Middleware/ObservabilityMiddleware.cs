@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using System.Globalization;
-using ArgumentNullException = System.ArgumentNullException;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Prometheus;
+using ValidDotNet;
 
 namespace Natron.Http.Middleware;
 
@@ -14,7 +14,7 @@ public sealed class ObservabilityMiddleware
 
     public ObservabilityMiddleware(RequestDelegate next)
     {
-        _next = next ?? throw new ArgumentNullException(nameof(next));
+        _next = next.ThrowIfNull();
     }
 
     public async Task InvokeAsync(HttpContext context)

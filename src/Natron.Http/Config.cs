@@ -31,6 +31,11 @@ public sealed class Config
 
     public void UseHealthChecks(params HealthCheck[] healthChecks)
     {
-        HealthChecks = healthChecks.ThrowIfNull().ToList();
+        healthChecks.ThrowIfNull();
+        foreach (var healthCheck in healthChecks)
+        {
+            healthCheck.ThrowIfNull();
+        }
+        HealthChecks = healthChecks.ToList();
     }
 }

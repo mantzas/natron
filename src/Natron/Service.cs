@@ -7,7 +7,7 @@ public sealed class Service : IService
 {
     private readonly ServiceConfig _config;
     private readonly ILogger<Service> _logger;
-    private bool _cancelKeyPressed;
+    private volatile bool _cancelKeyPressed;
 
     internal Service(ServiceConfig config)
     {

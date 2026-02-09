@@ -16,7 +16,7 @@ public class Message
     public Message(ILoggerFactory loggerFactory, CancellationToken cancellationToken, IAmazonSQS client,
         string queueUrl, Amazon.SQS.Model.Message message)
     {
-        _logger = loggerFactory.ThrowIfNull().CreateLogger<Consumer>();
+        _logger = loggerFactory.ThrowIfNull().CreateLogger<Message>();
         _queueUrl = queueUrl.ThrowIfNullOrWhitespace();
         _cancellationToken = cancellationToken.ThrowIfNone();
         _client = client.ThrowIfNull();

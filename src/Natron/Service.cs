@@ -39,6 +39,7 @@ public sealed class Service : IService
         {
             _logger.LogError(ex, "exception caught, gracefully shutting down components");
             GracefulShutdownComponents();
+            throw;
         }
     }
 
@@ -66,5 +67,7 @@ public sealed class Service : IService
     public void Dispose()
     {
         Console.CancelKeyPress -= OnCancelKeyPress;
+        _config.CancellationTokenSource.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

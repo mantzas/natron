@@ -59,10 +59,15 @@ public class MessageTests
 
         var lf = Substitute.For<ILoggerFactory>();
         var client = Substitute.For<IAmazonSQS>();
+        client.ChangeMessageVisibilityAsync(Arg.Any<ChangeMessageVisibilityRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(new ChangeMessageVisibilityResponse { HttpStatusCode = HttpStatusCode.OK }));
+        
         var msg = new Natron.AWS.Consumer.Message(lf, cts.Token, client, queueUrl, rawMessage);
 
         msg.Raw.Should().Be(rawMessage);
 
         await msg.NackAsync();
+        
+        await client.Received(1).ChangeMessageVisibilityAsync(Arg.Any<ChangeMessageVisibilityRequest>(), Arg.Any<CancellationToken>());
     }
 }

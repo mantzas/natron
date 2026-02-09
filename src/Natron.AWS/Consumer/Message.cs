@@ -6,7 +6,7 @@ using ValidDotNet;
 
 namespace Natron.AWS.Consumer;
 
-public class Message
+public sealed class Message
 {
     private readonly CancellationToken _cancellationToken;
     private readonly IAmazonSQS _client;
@@ -46,9 +46,24 @@ public class Message
             Raw.MessageId, response.HttpStatusCode);
     }
 
-    public Task NackAsync()
+    public async Task NackAsync()
     {
-        _logger.LogDebug("Message {MessageId} not acked", Raw.MessageId);
-        return Task.FromResult(0);
+        var request = new ChangeMessageVisibilityRequest
+        {
+            QueueUrl = _queueUrl,
+            ReceiptHandle = Raw.ReceiptHandle,
+            VisibilityTimeout = 0
+        };
+        var response = await _client.ChangeMessageVisibilityAsync(request, _cancellationToken).ConfigureAwait(false);
+
+        if (response.HttpStatusCode != HttpStatusCode.OK)
+        {
+            _logger.LogWarning("Failed to nack message {MessageId} with HTTP status {HttpStatusCode}",
+                Raw.MessageId, response.HttpStatusCode);
+            return;
+        }
+
+        _logger.LogDebug("Message {MessageId} nacked with HTTP status {HttpStatusCode}",
+            Raw.MessageId, response.HttpStatusCode);
     }
 }

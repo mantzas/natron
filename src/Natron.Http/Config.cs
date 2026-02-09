@@ -5,12 +5,12 @@ namespace Natron.Http;
 
 public sealed class Config
 {
-    public Config()
+    public Config(string[]? urls = null, TimeSpan? shutdownTimeout = null)
     {
         HealthChecks = [HealthCheck.Default()];
         Routes = [];
-        Urls = ["http://0.0.0.0:50000", "https://0.0.0.0:50001"];
-        ShutdownTimeout = TimeSpan.FromSeconds(10);
+        Urls = urls ?? ["http://0.0.0.0:50000", "https://0.0.0.0:50001"];
+        ShutdownTimeout = shutdownTimeout ?? TimeSpan.FromSeconds(10);
     }
 
     public List<HealthCheck> HealthChecks { get; private set; }

@@ -7,7 +7,7 @@ using ValidDotNet;
 
 namespace Natron.AWS.Consumer;
 
-public class Consumer : IComponent
+public sealed class Consumer : IComponent
 {
     private readonly IAmazonSQS _client;
 
@@ -44,8 +44,6 @@ public class Consumer : IComponent
                 continue;
             }
             _logger.LogDebug("Received {MessageCount} messages from SQS", messages.Count);
-
-            if (messages.Count == 0) continue;
 
             var batch = Batch.From(_loggerFactory, cancelToken, _client, _config.QueueUrl, messages);
 

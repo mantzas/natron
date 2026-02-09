@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Natron.Http.Tests.Unit;
 
+[Trait("Category", "Unit")]
 public class ComponentTests
 {
     [Fact]

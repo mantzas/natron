@@ -1,4 +1,4 @@
-﻿using Confluent.Kafka;
+using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 using ValidDotNet;
 
@@ -39,7 +39,14 @@ public class Consumer<TKey, TValue> : IComponent
             _logger.LogDebug("Message received {ResultMessage} with offset {ResultOffset}",
                 result.Message.ToString(), result.Offset);
 
-            await _processFunc(result.Message);
+            try
+            {
+                await _processFunc(result.Message);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to process message");
+            }
         }
 
         consumer.Close();

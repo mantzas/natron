@@ -36,7 +36,10 @@ return;
 
 IComponent CreateHttpComponent()
 {
-    var config = new Config();
+    var config = new Config(
+        urls: ["http://0.0.0.0:8080"],
+        shutdownTimeout: TimeSpan.FromSeconds(5)
+    );
     return new Component(loggerFactory, config);
 }
 

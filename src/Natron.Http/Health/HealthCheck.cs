@@ -3,7 +3,7 @@ using ValidDotNet;
 
 namespace Natron.Http.Health;
 
-public class HealthCheck
+public sealed class HealthCheck
 {
     public HealthCheck(string name, IHealthCheck instance)
     {

@@ -8,7 +8,7 @@ using ValidDotNet;
 
 namespace Natron.Http;
 
-public class Component : IComponent
+public sealed class Component : IComponent
 {
     private readonly Config _config;
     private readonly ILogger _logger;

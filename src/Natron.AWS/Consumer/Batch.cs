@@ -4,7 +4,7 @@ using ValidDotNet;
 
 namespace Natron.AWS.Consumer;
 
-public class Batch
+public sealed class Batch
 {
     private Batch(List<Message> messages)
     {

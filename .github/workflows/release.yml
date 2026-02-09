@@ -20,10 +20,16 @@ jobs:
       - name: Test
         run: dotnet test --no-restore --verbosity normal    
       
-      - name: Create Release NuGet package
+      - name: Create Release NuGet packages
         run: |
-          dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=${{ github.event.release.tag_name }} -o nupkg CloudDotNet/CloudDotNet.csproj
+          dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=${{ github.event.release.tag_name }} -o nupkg src/Natron/Natron.csproj
+          dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=${{ github.event.release.tag_name }} -o nupkg src/Natron.Http/Natron.Http.csproj
+          dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=${{ github.event.release.tag_name }} -o nupkg src/Natron.Kafka/Natron.Kafka.csproj
+          dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=${{ github.event.release.tag_name }} -o nupkg src/Natron.AWS/Natron.AWS.csproj
       
-      - name: Publish Nuget package
+      - name: Publish Nuget packages
         run: |
-          dotnet nuget push nupkg/CloudDotNet.${{ github.event.release.tag_name }}.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}  --skip-duplicate  
+          dotnet nuget push nupkg/Natron.${{ github.event.release.tag_name }}.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push nupkg/Natron.Http.${{ github.event.release.tag_name }}.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push nupkg/Natron.Kafka.${{ github.event.release.tag_name }}.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push nupkg/Natron.AWS.${{ github.event.release.tag_name }}.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate  

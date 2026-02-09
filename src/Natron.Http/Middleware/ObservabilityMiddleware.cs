@@ -8,7 +8,7 @@ namespace Natron.Http.Middleware;
 public sealed class ObservabilityMiddleware
 {
     private readonly RequestDelegate _next;
-    private static readonly Histogram OrderValueHistogram = CreateHttpRequestHistogram();
+    private static readonly Histogram HttpRequestDurationHistogram = CreateHttpRequestHistogram();
 
     public ObservabilityMiddleware(RequestDelegate next)
     {
@@ -17,9 +17,9 @@ public sealed class ObservabilityMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        var watch = new Stopwatch();
+        var watch = Stopwatch.StartNew();
         await _next(context);
-        OrderValueHistogram
+        HttpRequestDurationHistogram
             .WithLabels(context.Response.StatusCode.ToString(CultureInfo.InvariantCulture),
                 context.Request.Method, context.Request.Path)
             .Observe(watch.Elapsed.TotalSeconds);

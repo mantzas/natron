@@ -28,9 +28,9 @@ public class ServiceTests
 
     private class TestComponent : IComponent
     {
-        public async Task RunAsync(CancellationToken cancelToken)
+        public async Task RunAsync(CancellationToken cancellationToken)
         {
-            while (!cancelToken.IsCancellationRequested) await Task.Delay(10, cancelToken);
+            while (!cancellationToken.IsCancellationRequested) await Task.Delay(10, cancellationToken);
         }
     }
 }

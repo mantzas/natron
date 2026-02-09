@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using ArgumentNullException = System.ArgumentNullException;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Prometheus;
@@ -13,7 +14,7 @@ public sealed class ObservabilityMiddleware
 
     public ObservabilityMiddleware(RequestDelegate next)
     {
-        _next = next;
+        _next = next ?? throw new ArgumentNullException(nameof(next));
     }
 
     public async Task InvokeAsync(HttpContext context)

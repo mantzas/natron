@@ -4,7 +4,7 @@ using ValidDotNet;
 
 namespace Natron.Kafka.Consumer;
 
-public class Consumer<TKey, TValue> : IComponent
+public sealed class Consumer<TKey, TValue> : IComponent
 {
     private readonly Config _config;
     private readonly ILogger _logger;
@@ -19,16 +19,16 @@ public class Consumer<TKey, TValue> : IComponent
     }
 
 
-    public async Task RunAsync(CancellationToken cancelToken)
+    public async Task RunAsync(CancellationToken cancellationToken)
     {
         using var consumer = new ConsumerBuilder<TKey, TValue>(_config.ConsumerConfig).Build();
         consumer.Subscribe(_config.Topics);
 
         try
         {
-            while (!cancelToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                var result = consumer.Consume(cancelToken);
+                var result = consumer.Consume(cancellationToken);
 
                 if (result.IsPartitionEOF)
                 {

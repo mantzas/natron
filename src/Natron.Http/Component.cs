@@ -22,11 +22,11 @@ public class Component : IComponent, IAsyncDisposable
         _logger = loggerFactory.CreateLogger<Component>();
     }
 
-    public Task RunAsync(CancellationToken cancelToken)
+    public Task RunAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Http Component started");
         _host = CreateHost();
-        return _host.RunAsync(cancelToken);
+        return _host.RunAsync(cancellationToken);
     }
 
     private IHost CreateHost()

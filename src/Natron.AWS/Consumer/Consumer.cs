@@ -23,29 +23,27 @@ public class Consumer : IComponent
         _logger = _loggerFactory.CreateLogger<Consumer>();
     }
 
-    public async Task RunAsync(CancellationToken cancelToken)
+    public async Task RunAsync(CancellationToken cancellationToken)
     {
-        // TODO: Implement queue metrics/stats collection if needed
-        
-        while (!cancelToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
-            var messages = await GetMessagesAsync(_client, cancelToken);
+            var messages = await GetMessagesAsync(_client, cancellationToken);
 
             if (messages == null)
             {
                 _logger.LogDebug("Received null messages from SQS");
-                await Task.Delay(TimeSpan.FromSeconds(_config.WaitTimeSeconds), cancelToken);
+                await Task.Delay(TimeSpan.FromSeconds(_config.WaitTimeSeconds), cancellationToken);
                 continue;
             }
             if (messages.Count == 0)
             {
                 _logger.LogDebug("No messages received from SQS");
-                await Task.Delay(TimeSpan.FromSeconds(_config.WaitTimeSeconds), cancelToken);
+                await Task.Delay(TimeSpan.FromSeconds(_config.WaitTimeSeconds), cancellationToken);
                 continue;
             }
             _logger.LogDebug("Received {MessageCount} messages from SQS", messages.Count);
 
-            var batch = Batch.From(_loggerFactory, cancelToken, _client, _config.QueueUrl, messages);
+            var batch = Batch.From(_loggerFactory, cancellationToken, _client, _config.QueueUrl, messages);
 
             try
             {
@@ -59,7 +57,7 @@ public class Consumer : IComponent
     }
 
     private async Task<List<Amazon.SQS.Model.Message>> GetMessagesAsync(IAmazonSQS client,
-        CancellationToken cancelToken)
+        CancellationToken cancellationToken)
     {
         var request = new ReceiveMessageRequest
         {
@@ -71,9 +69,8 @@ public class Consumer : IComponent
             WaitTimeSeconds = _config.WaitTimeSeconds
         };
 
-        var response = await client.ReceiveMessageAsync(request, cancelToken).ConfigureAwait(false);
+        var response = await client.ReceiveMessageAsync(request, cancellationToken).ConfigureAwait(false);
 
-        // TODO: clarify about the status code
         if (response.HttpStatusCode == HttpStatusCode.OK) return response.Messages;
 
         _logger.LogError("Failed to receive messages with HTTP status code {ResponseHttpStatusCode}",

@@ -8,13 +8,8 @@
 
     <ItemGroup>
       <PackageReference Include="AWSSDK.SQS" Version="4.0.2.14" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
       <PackageReference Include="validdotnet" Version="0.3.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-        <HintPath>..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.app.ref\7.0.0\ref\net7.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
     <ItemGroup>

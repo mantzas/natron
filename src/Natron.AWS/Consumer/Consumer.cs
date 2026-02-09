@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Amazon.SQS.Util;
@@ -25,9 +25,7 @@ public class Consumer : IComponent
 
     public async Task RunAsync(CancellationToken cancelToken)
     {
-        await Task.Factory.StartNew(async () => await GetStatsAsync(_client, cancelToken),
-            TaskCreationOptions.LongRunning);
-
+        _ = Task.Run(() => GetStatsAsync(_client, cancelToken), cancelToken);
 
         while (!cancelToken.IsCancellationRequested)
         {
@@ -46,8 +44,6 @@ public class Consumer : IComponent
                 continue;
             }
             _logger.LogDebug("Received {MessageCount} messages from SQS", messages.Count);
-
-            if (messages.Count == 0) continue;
 
             var batch = Batch.From(_loggerFactory, cancelToken, _client, _config.QueueUrl, messages);
 

@@ -18,12 +18,18 @@ public sealed class ObservabilityMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var watch = Stopwatch.StartNew();
-        await _next(context);
-        watch.Stop();
-        OrderValueHistogram
-            .WithLabels(context.Response.StatusCode.ToString(CultureInfo.InvariantCulture),
-                context.Request.Method, context.Request.Path)
-            .Observe(watch.Elapsed.TotalSeconds);
+        try
+        {
+            await _next(context);
+        }
+        finally
+        {
+            watch.Stop();
+            OrderValueHistogram
+                .WithLabels(context.Response.StatusCode.ToString(CultureInfo.InvariantCulture),
+                    context.Request.Method, context.Request.Path)
+                .Observe(watch.Elapsed.TotalSeconds);
+        }
     }
 
     private static Histogram CreateHttpRequestHistogram()

@@ -15,7 +15,7 @@ public class Consumer<TKey, TValue> : IComponent
     {
         _processFunc = processFunc.ThrowIfNull();
         _config = config.ThrowIfNull();
-        _logger = loggerFactory.CreateLogger<Consumer<TKey, TValue>>();
+        _logger = loggerFactory.ThrowIfNull().CreateLogger<Consumer<TKey, TValue>>();
     }
 
 
@@ -24,37 +24,46 @@ public class Consumer<TKey, TValue> : IComponent
         using var consumer = new ConsumerBuilder<TKey, TValue>(_config.ConsumerConfig).Build();
         consumer.Subscribe(_config.Topics);
 
-        while (!cancelToken.IsCancellationRequested)
+        try
         {
-            var result = consumer.Consume(cancelToken);
-
-            if (result.IsPartitionEOF)
+            while (!cancelToken.IsCancellationRequested)
             {
-                _logger.LogDebug("Partition EOF reached");
-                continue;
-            }
+                var result = consumer.Consume(cancelToken);
 
-            _logger.LogDebug("Message received {ResultMessage} with offset {ResultOffset}",
-                result.Message.ToString(), result.Offset);
-
-            try
-            {
-                await _processFunc(result.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error processing message at offset {Offset}", result.Offset);
-
-                if (_config.ProcessingStrategy == ProcessingStrategy.Crash)
+                if (result.IsPartitionEOF)
                 {
-                    _logger.LogCritical("ProcessingStrategy is set to Crash. Rethrowing exception");
-                    throw;
+                    _logger.LogDebug("Partition EOF reached");
+                    continue;
                 }
 
-                _logger.LogWarning("ProcessingStrategy is set to LogAndContinue. Continuing to next message");
+                _logger.LogDebug("Message received {ResultMessage} with offset {ResultOffset}",
+                    result.Message.ToString(), result.Offset);
+
+                try
+                {
+                    await _processFunc(result.Message);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error processing message at offset {Offset}", result.Offset);
+
+                    if (_config.ProcessingStrategy == ProcessingStrategy.Crash)
+                    {
+                        _logger.LogCritical("ProcessingStrategy is set to Crash. Rethrowing exception");
+                        throw;
+                    }
+
+                    _logger.LogWarning("ProcessingStrategy is set to LogAndContinue. Continuing to next message");
+                }
             }
         }
-
-        consumer.Close();
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("Consumer cancellation requested");
+        }
+        finally
+        {
+            consumer.Close();
+        }
     }
 }

@@ -46,6 +46,11 @@ public class Message
             Raw.MessageId, response.HttpStatusCode);
     }
 
+    /// <summary>
+    /// Negative acknowledgment - does not delete the message from the queue.
+    /// The message will become visible again after the visibility timeout expires,
+    /// allowing it to be reprocessed by this or another consumer.
+    /// </summary>
     public Task NackAsync()
     {
         _logger.LogDebug("Message {MessageId} not acked", Raw.MessageId);

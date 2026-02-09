@@ -8,6 +8,7 @@ public sealed class Service : IService
     private readonly ServiceConfig _config;
     private readonly ILogger<Service> _logger;
     private bool _cancelKeyPressed;
+    private bool _running;
 
     internal Service(ServiceConfig config)
     {
@@ -17,6 +18,12 @@ public sealed class Service : IService
 
     public async Task RunAsync()
     {
+        if (_running)
+        {
+            throw new InvalidOperationException("Service is already running. RunAsync cannot be called multiple times.");
+        }
+        _running = true;
+        
         try
         {
             SetupCancelKeyPress();
@@ -38,7 +45,7 @@ public sealed class Service : IService
         catch (Exception ex)
         {
             _logger.LogError(ex, "exception caught, gracefully shutting down components");
-            GracefulShutdownComponents();
+            _config.CancellationTokenSource.Cancel();
         }
     }
 

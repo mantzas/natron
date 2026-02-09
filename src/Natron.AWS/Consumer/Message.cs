@@ -34,7 +34,6 @@ public class Message
         };
         var response = await _client.DeleteMessageAsync(request, _cancellationToken).ConfigureAwait(false);
 
-        // TODO: clarify about the status code
         if (response.HttpStatusCode != HttpStatusCode.OK)
         {
             _logger.LogWarning("Failed to delete message {MessageId} with HTTP status {HttpStatusCode}",

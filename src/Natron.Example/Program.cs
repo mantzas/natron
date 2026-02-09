@@ -1,4 +1,4 @@
-﻿using Amazon.Runtime;
+using Amazon.Runtime;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Confluent.Kafka;
@@ -84,7 +84,7 @@ async Task<IComponent> CreateKafkaConsumer()
 
     await producer.ProduceAsync(topics.First(), message);
 
-    var config = new ConsumerConfig
+    var consumerConfig = new ConsumerConfig
     {
         BootstrapServers = "localhost:9092",
         ClientId = "example_client",
@@ -93,8 +93,9 @@ async Task<IComponent> CreateKafkaConsumer()
         AutoOffsetReset = AutoOffsetReset.Earliest
     };
 
+    var kafkaConfig = new Natron.Kafka.Consumer.Config(consumerConfig, topics, ProcessingStrategy.LogAndContinue);
 
-    return new Consumer<string, string>(loggerFactory, config, topics, ProcessFuncAsync);
+    return new Consumer<string, string>(loggerFactory, kafkaConfig, ProcessFuncAsync);
 
     Task ProcessFuncAsync(Message<string, string> msg)
     {

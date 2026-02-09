@@ -37,7 +37,8 @@ public class ConsumerTests
 
         Message<string, string>? expectedMessage = null;
 
-        var consumer = new Consumer<string, string>(loggerFactory, consumerConfig, topics, ProcessFunc);
+        var config = new Natron.Kafka.Consumer.Config(consumerConfig, topics);
+        var consumer = new Consumer<string, string>(loggerFactory, config, ProcessFunc);
         await consumer.RunAsync(cts.Token);
 
         expectedMessage.Should().NotBeNull();

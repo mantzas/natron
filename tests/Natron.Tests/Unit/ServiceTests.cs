@@ -22,8 +22,9 @@ public class ServiceTests
         var t = s.RunAsync();
         await Task.Delay(100, cts.Token);
         await cts.CancelAsync();
-        await t;
-        t.Status.Should().Be(TaskStatus.RanToCompletion);
+        
+        // Expect TaskCanceledException to be thrown since we now re-throw exceptions
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await t);
     }
 
     private class TestComponent : IComponent

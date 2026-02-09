@@ -1,4 +1,4 @@
-﻿using Confluent.Kafka;
+using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 using ValidDotNet;
 
@@ -6,25 +6,23 @@ namespace Natron.Kafka.Consumer;
 
 public class Consumer<TKey, TValue> : IComponent
 {
-    private readonly ConsumerConfig _consumerConfig;
+    private readonly Config _config;
     private readonly ILogger _logger;
     private readonly Func<Message<TKey, TValue>, Task> _processFunc;
-    private readonly IEnumerable<string> _topics;
 
-    public Consumer(ILoggerFactory loggerFactory, ConsumerConfig consumerConfig, IEnumerable<string> topics,
+    public Consumer(ILoggerFactory loggerFactory, Config config,
         Func<Message<TKey, TValue>, Task> processFunc)
     {
         _processFunc = processFunc.ThrowIfNull();
-        _consumerConfig = consumerConfig.ThrowIfNull();
-        _topics = topics.ThrowIfNull();
+        _config = config.ThrowIfNull();
         _logger = loggerFactory.CreateLogger<Consumer<TKey, TValue>>();
     }
 
 
     public async Task RunAsync(CancellationToken cancelToken)
     {
-        using var consumer = new ConsumerBuilder<TKey, TValue>(_consumerConfig).Build();
-        consumer.Subscribe(_topics);
+        using var consumer = new ConsumerBuilder<TKey, TValue>(_config.ConsumerConfig).Build();
+        consumer.Subscribe(_config.Topics);
 
         while (!cancelToken.IsCancellationRequested)
         {
@@ -39,7 +37,22 @@ public class Consumer<TKey, TValue> : IComponent
             _logger.LogDebug("Message received {ResultMessage} with offset {ResultOffset}",
                 result.Message.ToString(), result.Offset);
 
-            await _processFunc(result.Message);
+            try
+            {
+                await _processFunc(result.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing message at offset {Offset}", result.Offset);
+
+                if (_config.ProcessingStrategy == ProcessingStrategy.Crash)
+                {
+                    _logger.LogCritical("ProcessingStrategy is set to Crash. Rethrowing exception");
+                    throw;
+                }
+
+                _logger.LogWarning("ProcessingStrategy is set to LogAndContinue. Continuing to next message");
+            }
         }
 
         consumer.Close();

@@ -17,8 +17,9 @@ public sealed class ObservabilityMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        var watch = new Stopwatch();
+        var watch = Stopwatch.StartNew();
         await _next(context);
+        watch.Stop();
         OrderValueHistogram
             .WithLabels(context.Response.StatusCode.ToString(CultureInfo.InvariantCulture),
                 context.Request.Method, context.Request.Path)

@@ -4,7 +4,7 @@ using ValidDotNet;
 
 namespace Natron.Kafka.Producer;
 
-public class Producer<TKey, TValue> : IDisposable
+public sealed class Producer<TKey, TValue> : IDisposable
 {
     private readonly IProducer<TKey, TValue> _producer;
 

@@ -6,7 +6,7 @@ using ValidDotNet;
 
 namespace Natron.AWS.Consumer;
 
-public class Message
+public sealed class Message
 {
     private readonly CancellationToken _cancellationToken;
     private readonly IAmazonSQS _client;

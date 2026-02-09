@@ -4,7 +4,7 @@ using ValidDotNet;
 
 namespace Natron.Kafka.Consumer;
 
-public class Consumer<TKey, TValue> : IComponent
+public sealed class Consumer<TKey, TValue> : IComponent
 {
     private readonly ConsumerConfig _consumerConfig;
     private readonly ILogger _logger;

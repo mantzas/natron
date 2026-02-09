@@ -7,7 +7,7 @@ using ValidDotNet;
 
 namespace Natron.AWS.Consumer;
 
-public class Consumer : IComponent
+public sealed class Consumer : IComponent
 {
     private readonly IAmazonSQS _client;
 

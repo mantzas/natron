@@ -114,4 +114,22 @@ public class Route
     {
         return InstrumentedDelete(template, handler);
     }
+
+    [Obsolete("Use InstrumentedPatch instead")]
+    public static Route TracedPatch(string template, RequestDelegate handler)
+    {
+        return InstrumentedPatch(template, handler);
+    }
+
+    [Obsolete("Use InstrumentedHead instead")]
+    public static Route TracedHead(string template, RequestDelegate handler)
+    {
+        return InstrumentedHead(template, handler);
+    }
+
+    [Obsolete("Use InstrumentedOptions instead")]
+    public static Route TracedOptions(string template, RequestDelegate handler)
+    {
+        return InstrumentedOptions(template, handler);
+    }
 }

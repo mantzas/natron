@@ -53,6 +53,6 @@ public class Message
     public Task NackAsync()
     {
         _logger.LogDebug("Message {MessageId} not acked", Raw.MessageId);
-        return Task.FromResult(0);
+        return Task.CompletedTask;
     }
 }

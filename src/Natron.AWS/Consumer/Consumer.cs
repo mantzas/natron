@@ -52,6 +52,14 @@ public class Consumer : IComponent
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error processing SQS batch");
+
+                if (_config.ProcessingStrategy == ProcessingStrategy.Crash)
+                {
+                    _logger.LogCritical("ProcessingStrategy is set to Crash. Rethrowing exception");
+                    throw;
+                }
+
+                _logger.LogWarning("ProcessingStrategy is set to LogAndContinue. Continuing to next batch");
             }
         }
     }

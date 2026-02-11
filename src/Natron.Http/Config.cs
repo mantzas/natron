@@ -12,7 +12,6 @@ public sealed class Config
         Urls = urls ?? ["http://0.0.0.0:50000", "https://0.0.0.0:50001"];
         ShutdownTimeout = shutdownTimeout ?? TimeSpan.FromSeconds(10);
         
-        Urls.ThrowIfNull().ThrowIfNullOrEmpty();
         foreach (var url in Urls)
         {
             url.ThrowIfNullOrWhitespace();
@@ -24,10 +23,20 @@ public sealed class Config
         }
     }
 
-    public List<HealthCheck> HealthChecks { get; private set; }
-    public List<Route> Routes { get; }
+    public IReadOnlyList<HealthCheck> HealthChecks { get; private set; }
+    public IReadOnlyList<Route> Routes { get; private set; }
     public string[] Urls { get; }
     public TimeSpan ShutdownTimeout { get; }
+
+    public void UseRoutes(params Route[] routes)
+    {
+        routes.ThrowIfNull();
+        foreach (var route in routes)
+        {
+            route.ThrowIfNull();
+        }
+        Routes = routes.ToList();
+    }
 
     public void UseHealthChecks(params HealthCheck[] healthChecks)
     {

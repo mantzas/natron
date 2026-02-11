@@ -75,7 +75,7 @@ async Task<IComponent> CreateKafkaConsumer()
         ClientId = "example_producer_client"
     };
 
-    var producer = new Producer<string, string>(loggerFactory, producerConfig);
+    using var producer = new Producer<string, string>(loggerFactory, producerConfig);
 
     var message = new Message<string, string>
     {
@@ -96,7 +96,7 @@ async Task<IComponent> CreateKafkaConsumer()
         AutoOffsetReset = AutoOffsetReset.Earliest
     };
 
-    var kafkaConfig = new Natron.Kafka.Consumer.Config(consumerConfig, topics, ProcessingStrategy.LogAndContinue);
+    var kafkaConfig = new Natron.Kafka.Consumer.Config(consumerConfig, topics, Natron.Kafka.Consumer.ProcessingStrategy.LogAndContinue);
 
     return new Consumer<string, string>(loggerFactory, kafkaConfig, ProcessFuncAsync);
 

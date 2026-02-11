@@ -16,10 +16,10 @@ public sealed class ServiceConfig
     public string Name { get; }
     public ILoggerFactory LoggerFactory { get; }
     public CancellationTokenSource CancellationTokenSource { get; }
-    public List<IComponent> Components { get; }
+    public IReadOnlyList<IComponent> Components { get; private set; }
 
     public void UseComponents(params IComponent[] components)
     {
-        Components.AddRange(components.ThrowIfNullOrEmpty());
+        Components = components.ThrowIfNullOrEmpty().ToList();
     }
 }

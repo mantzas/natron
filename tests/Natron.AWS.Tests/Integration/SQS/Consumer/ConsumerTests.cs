@@ -21,7 +21,7 @@ public class ConsumerTests
         var cts = new CancellationTokenSource();
         var counter = 0;
 
-        var config = new Config(queueUrl, ProcessFunc, waitTimeSeconds: 1, visibilityTimeout: 1, statsInterval: 1,
+        var config = new Config(queueUrl, ProcessFunc, waitTimeSeconds: 1, visibilityTimeout: 1,
             maxNumberOfMessages: 10);
         var consumer = new AWS.Consumer.Consumer(lf, client, config);
         await consumer.RunAsync(cts.Token);

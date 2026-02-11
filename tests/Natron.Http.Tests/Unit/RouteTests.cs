@@ -1,3 +1,5 @@
+#pragma warning disable CS0618 // Obsolete Traced* methods are tested intentionally
+
 namespace Natron.Http.Tests.Unit;
 
 [Trait("Category", "Unit")]
@@ -38,9 +40,7 @@ public class RouteTests
     [Fact]
     public void Route_TracedGet()
     {
-#pragma warning disable CS0618
         var route = Route.TracedGet("TEMPLATE", _ => null!);
-#pragma warning restore CS0618
         route.Verb.Should().Be("GET");
         route.Template.Should().Be("TEMPLATE");
         route.Handler.Should().NotBeNull();
@@ -50,9 +50,7 @@ public class RouteTests
     [Fact]
     public void Route_TracedPost()
     {
-#pragma warning disable CS0618
         var route = Route.TracedPost("TEMPLATE", _ => null!);
-#pragma warning restore CS0618
         route.Verb.Should().Be("POST");
         route.Template.Should().Be("TEMPLATE");
         route.Handler.Should().NotBeNull();
@@ -62,9 +60,7 @@ public class RouteTests
     [Fact]
     public void Route_TracedPut()
     {
-#pragma warning disable CS0618
         var route = Route.TracedPut("TEMPLATE", _ => null!);
-#pragma warning restore CS0618
         route.Verb.Should().Be("PUT");
         route.Template.Should().Be("TEMPLATE");
         route.Handler.Should().NotBeNull();
@@ -74,9 +70,7 @@ public class RouteTests
     [Fact]
     public void Route_TracedDelete()
     {
-#pragma warning disable CS0618
         var route = Route.TracedDelete("TEMPLATE", _ => null!);
-#pragma warning restore CS0618
         route.Verb.Should().Be("DELETE");
         route.Template.Should().Be("TEMPLATE");
         route.Handler.Should().NotBeNull();
@@ -226,9 +220,7 @@ public class RouteTests
     [Fact]
     public void Route_TracedPatch()
     {
-#pragma warning disable CS0618
         var route = Route.TracedPatch("TEMPLATE", _ => null!);
-#pragma warning restore CS0618
         route.Verb.Should().Be("PATCH");
         route.Template.Should().Be("TEMPLATE");
         route.Handler.Should().NotBeNull();
@@ -238,9 +230,7 @@ public class RouteTests
     [Fact]
     public void Route_TracedHead()
     {
-#pragma warning disable CS0618
         var route = Route.TracedHead("TEMPLATE", _ => null!);
-#pragma warning restore CS0618
         route.Verb.Should().Be("HEAD");
         route.Template.Should().Be("TEMPLATE");
         route.Handler.Should().NotBeNull();
@@ -250,9 +240,7 @@ public class RouteTests
     [Fact]
     public void Route_TracedOptions()
     {
-#pragma warning disable CS0618
         var route = Route.TracedOptions("TEMPLATE", _ => null!);
-#pragma warning restore CS0618
         route.Verb.Should().Be("OPTIONS");
         route.Template.Should().Be("TEMPLATE");
         route.Handler.Should().NotBeNull();

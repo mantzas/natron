@@ -7,6 +7,7 @@ on:
     paths:
       - '**.cs'
       - '**.csproj'
+      - 'Directory.Packages.props'
 
 jobs:
   ci:
@@ -18,14 +19,27 @@ jobs:
 
       - name: Start containers
         run: docker compose up -d
-        
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x.x'
-          
+
       - name: Install dependencies
         run: dotnet restore
+
+      - name: Wait for containers to be ready
+        run: |
+          echo "Waiting for Moto..."
+          timeout 60 bash -c 'until curl -sf http://127.0.0.1:5000/moto-api/ > /dev/null; do sleep 2; done'
+          echo "Moto ready."
+          echo "Waiting for Kafka..."
+          timeout 120 bash -c 'until [ "$(docker inspect --format="{{.State.Health.Status}}" kafka)" = "healthy" ]; do sleep 3; done' || {
+            echo "::error::Kafka health check timed out. Container logs:"
+            docker logs kafka
+            exit 1
+          }
+          echo "Kafka ready."
 
       - name: Unit Tests
         run: dotnet test --filter Category=Unit --no-restore --verbosity quiet

@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.SQS" Version="4.0.2.15" />
-      <PackageReference Include="Confluent.Kafka" Version="2.13.1" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.1" />
-      <PackageReference Include="Serilog" Version="4.3.0" />
-      <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
-      <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+      <PackageReference Include="AWSSDK.SQS" />
+      <PackageReference Include="Confluent.Kafka" />
+      <PackageReference Include="Microsoft.Extensions.Logging" />
+      <PackageReference Include="Serilog" />
+      <PackageReference Include="Serilog.Extensions.Logging" />
+      <PackageReference Include="Serilog.Sinks.Console" />
     </ItemGroup>
 
     <ItemGroup>

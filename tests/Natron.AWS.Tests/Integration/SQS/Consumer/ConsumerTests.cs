@@ -61,9 +61,10 @@ public class ConsumerTests
 
     private static async Task<Tuple<IAmazonSQS, string>> CreateClientAndQueueAsync(IEnumerable<string> messageIds)
     {
-        var client = new AmazonSQSClient(new AnonymousAWSCredentials(), new AmazonSQSConfig
+        var client = new AmazonSQSClient(new BasicAWSCredentials("test", "test"), new AmazonSQSConfig
         {
-            ServiceURL = "http://localhost:4566"
+            ServiceURL = "http://127.0.0.1:5000",
+            AuthenticationRegion = "us-east-1"
         });
 
         var queueResponse = await client.CreateQueueAsync(new CreateQueueRequest

@@ -47,7 +47,7 @@ async Task<IComponent> CreateSqsConsumerAsync()
 {
     var client = new AmazonSQSClient(new AnonymousAWSCredentials(), new AmazonSQSConfig
     {
-        ServiceURL = "http://localhost:4566"
+        ServiceURL = "http://localhost:5000"
     });
 
     var queueResponse = await client.CreateQueueAsync(new CreateQueueRequest

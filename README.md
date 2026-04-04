@@ -86,7 +86,7 @@ dotnet build
 dotnet test
 ```
 
-For integration tests that require Docker services (Kafka, LocalStack):
+For integration tests that require Docker services (Kafka, Moto):
 
 ```bash
 docker-compose up -d

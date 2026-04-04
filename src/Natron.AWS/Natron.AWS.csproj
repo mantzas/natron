@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.SQS" Version="4.0.2.15" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
-      <PackageReference Include="validdotnet" Version="0.3.0" />
+      <PackageReference Include="AWSSDK.SQS" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+      <PackageReference Include="validdotnet" />
     </ItemGroup>
 
     <ItemGroup>

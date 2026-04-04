@@ -23,7 +23,7 @@ jobs:
       - name: Wait for containers to be ready
         run: |
           echo "Waiting for Moto..."
-          timeout 60 bash -c 'until curl -sf http://localhost:5000/moto-api/; do sleep 2; done'
+          timeout 60 bash -c 'until curl -sf http://127.0.0.1:5000/moto-api/; do sleep 2; done'
           echo ""
           echo "Waiting for Kafka..."
           timeout 60 bash -c 'until docker exec kafka kafka-broker-api-versions --bootstrap-server localhost:9092 > /dev/null 2>&1; do sleep 2; done'

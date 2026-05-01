@@ -28,7 +28,7 @@
 
         <!-- Testing -->
         <PackageVersion Include="coverlet.collector" Version="10.0.0" />
-        <PackageVersion Include="coverlet.msbuild" Version="8.0.0" />
+        <PackageVersion Include="coverlet.msbuild" Version="10.0.0" />
         <PackageVersion Include="DisableDateTimeNow" Version="1.0.5883.39470" />
         <PackageVersion Include="FluentAssertions" Version="7.2.1" />
         <PackageVersion Include="FluentAssertions.Analyzers" Version="0.34.1" />

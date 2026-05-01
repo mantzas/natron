@@ -8,7 +8,7 @@
         <!-- Core -->
         <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.1" />
         <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
-        <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.2" />
+        <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.7" />
         <PackageVersion Include="ValidDotNet" Version="0.3.0" />
 
         <!-- Kafka -->

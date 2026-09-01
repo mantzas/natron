@@ -15,7 +15,7 @@
         <PackageVersion Include="Confluent.Kafka" Version="2.15.0" />
 
         <!-- AWS -->
-        <PackageVersion Include="AWSSDK.SQS" Version="4.0.100.7" />
+        <PackageVersion Include="AWSSDK.SQS" Version="4.0.100.11" />
 
         <!-- HTTP -->
         <PackageVersion Include="prometheus-net" Version="8.2.1" />

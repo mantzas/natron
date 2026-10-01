@@ -12,7 +12,7 @@
         <PackageVersion Include="ValidDotNet" Version="0.3.0" />
 
         <!-- Kafka -->
-        <PackageVersion Include="Confluent.Kafka" Version="2.15.0" />
+        <PackageVersion Include="Confluent.Kafka" Version="2.15.1" />
 
         <!-- AWS -->
         <PackageVersion Include="AWSSDK.SQS" Version="4.0.100.11" />
